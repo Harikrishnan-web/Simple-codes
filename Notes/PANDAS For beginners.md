@@ -1,4 +1,4 @@
-Detailed Explanation of Pandas in Python for Data Science
+Detailed Explanation of Pandas in Python for Data Science by harikrishnan 
 
 Pandas is a powerful and flexible open-source data analysis and manipulation library for Python. It is built on top of NumPy and provides data structures and functions needed to work with structured data. The primary data structures in Pandas are Series and DataFrame, which allow for efficient data manipulation and analysis. Below, we will explore these concepts in detail, ensuring that we cover all important aspects.
 
