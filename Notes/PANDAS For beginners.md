@@ -13,14 +13,18 @@ Pandas Series
 
 Example of Creating a Series:
 
-import pandas as pd
+
 
 # Creating a Series
+```
+import pandas as pd
 data = pd.Series([10, 20, 30, 40], index=['a', 'b', 'c', 'd'])
 print(data)
+
+```
 ```
 Output:
-```
+
 a    10
 b    20
 c    30
@@ -34,7 +38,7 @@ Pandas DataFrame
 - DataFrames allow for easy data manipulation, including filtering, grouping, and aggregating data.
 
 Example of Creating a DataFrame:
-
+```
 # Creating a DataFrame
 data = {
     'Name': ['Alice', 'Bob', 'Charlie'],
@@ -44,8 +48,9 @@ data = {
 df = pd.DataFrame(data)
 print(df)
 ```
-Output:
 ```
+Output:
+
       Name  Age         City
 0    Alice   25     New York
 1      Bob   30  Los Angeles
@@ -69,7 +74,7 @@ From a List of Dictionaries
 - Each dictionary corresponds to a row in the DataFrame. The keys of the dictionary become the column names.
 
 Example:
-
+```
 data = [{'Name': 'Alice', 'Age': 25}, {'Name': 'Bob', 'Age': 30}]
 df = pd.DataFrame(data)
 print(df)
@@ -101,12 +106,23 @@ Indexing
 - Use `loc` for label-based indexing and `iloc` for position-based indexing.
 
 Example:
-```python
+```
 # Accessing data using loc and iloc
 print(df.loc[0])  # Accessing the first row by label
 print(df.iloc[0])  # Accessing the first row by position
 ```
+Output:
+```
+Name       Alice
+Age           25
+City    New York
+Name: 0, dtype: object
 
+Name       Alice
+Age           25
+City    New York
+Name: 0, dtype: object
+```
 Slicing
 - Slicing allows you to extract subsets of data. You can slice a Series or DataFrame using standard Python slicing techniques.
 
@@ -148,14 +164,19 @@ Methods for Handling Missing Data
 - `fillna()`: Replaces missing values with a specified value or method (e.g., forward fill, backward fill).
 
 Example:
-```python
+```
 # Handling missing data
 df['Age'].fillna(df['Age'].mean(), inplace=True)  # Filling missing values with the mean
 ```
+Output:
+```
+      Name   Age         City
+0    Alice  25.0     New York
+1      Bob  30.0  Los Angeles
+2     None  35.0      Chicago
+```
 
----
-
-### 6. Hierarchical Indexing
+6. Hierarchical Indexing
 
 Hierarchical indexing allows for multiple levels of indexing in a single DataFrame or Series.
 
@@ -198,11 +219,18 @@ Group By
 - The `groupby()` method allows for splitting the data into groups based on some criteria, applying a function, and combining the results.
 
 Example:
-```python
+```
 # Grouping data
 grouped = df.groupby('City').mean()  # Grouping by city and calculating the mean age
 ```
-
+Output:
+```
+             Age
+City           
+Chicago     35.0
+Los Angeles  30.0
+New York    25.0
+```
 ---
 
 9. Pivot Tables
@@ -216,11 +244,19 @@ Syntax
 - Use the `pivot_table()` method to create pivot tables, specifying index, columns, and values.
 
 Example:
-```python
+python
+```
 # Creating a pivot table
 pivot = df.pivot_table(values='Age', index='City', aggfunc='mean')
 ```
-
+output:
+```
+             Age
+City           
+Chicago     35.0
+Los Angeles  30.0
+New York    25.0
+```
 ---
 
 Conclusion
