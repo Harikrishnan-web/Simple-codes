@@ -341,6 +341,3 @@ For details and more examples, refer to the full problem set in your attached ma
 - **Exam preparation**: Focus on concept definitions and code writing ability.
 
 These notes are structured to ensure maximum coverage to tackle any question. Focus especially on explanations and the commented code examples[1].
-
-Citations:
-[1] OOP-unit-1.pdf https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/68867823/489c5df9-ecf9-46c9-934c-4a856b5137b9/OOP-unit-1.pdf
