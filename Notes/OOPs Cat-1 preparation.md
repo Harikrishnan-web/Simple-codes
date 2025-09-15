@@ -1,18 +1,27 @@
-Sure! Here are detailed notes covering the key concepts from Unit 1 and Unit 2 of your Object-Oriented Programming course. These notes are structured to help you understand the topics thoroughly and prepare for your exams.
-Unit 1: Paradigms & Basic Constructs
-Overview of Object-Oriented Programming (OOP)
-[cite_start]OOP is a programming paradigm that organizes code around objects rather than actions or data alone. [cite_start]It focuses on "who is being affected" rather than "what is happening".
-Core OOP Concepts
- * [cite_start]Object: A real-world entity with a state (data/attributes) and behavior (functionality). [cite_start]Objects are instances of a class, occupy memory, and have a unique identity. [cite_start]They communicate by sending messages to each other.
- * [cite_start]Class: A blueprint or template for creating objects. [cite_start]It's a logical entity that groups similar objects and defines their common data members and methods. [cite_start]A class itself doesn't take up memory; memory is allocated when an object is created from it.
- * [cite_start]Inheritance: A mechanism where one class (a subclass or child class) acquires the properties and behaviors of another class (a superclass or parent class). [cite_start]It's a key principle for code reusability and establishing an "is-a" relationship.
- * [cite_start]Polymorphism: The ability of an object or method to take on many forms. It allows a single name to be used for different but related actions. [cite_start]In Java, this is achieved through method overloading (at compile time) and method overriding (at runtime).
- * [cite_start]Abstraction: The process of hiding complex implementation details and showing only the essential functionality to the user. [cite_start]For instance, when you make a phone call, you don't know the internal processes involved. [cite_start]In Java, this is achieved using abstract classes and interfaces.
- * [cite_start]Encapsulation: The practice of wrapping data and the code that operates on that data into a single unit, like a capsule. [cite_start]This is done by bundling a class's data members and methods together, and often restricting direct access to the data using access modifiers. [cite_start]This concept is a form of data hiding.
-Java Basics: Classes, Methods, and Objects
-In Java, a program's structure revolves around classes and objects.
-Defining a Class
-[cite_start]A class is defined using the class keyword.
+ # Unit 1: Paradigms & Basic Constructs
+
+## Overview of Object-Oriented Programming (OOP)
+OOP is a programming paradigm organized around **objects** rather than actions and data. [span_0](start_span)[span_1](start_span)It can be characterized as data controlling access to code[span_0](end_span)[span_1](end_span).
+
+***
+
+### Core OOP Concepts
+* **[span_2](start_span)[span_3](start_span)Object:** A real-world entity with a **state** (data/value) and **behavior** (functionality)[span_2](end_span)[span_3](end_span). [span_4](start_span)[span_5](start_span)An object is an instance of a class, occupies some space in memory, and has a unique ID[span_4](end_span)[span_5](end_span). [span_6](start_span)Objects can communicate with each other without knowing the details of their data or code[span_6](end_span).
+* **[span_7](start_span)Class:** A blueprint from which you can create individual objects[span_7](end_span). [span_8](start_span)It is a logical entity and a collection of objects[span_8](end_span). [span_9](start_span)A class consists of data members and methods, but it doesn't store any space in memory[span_9](end_span).
+* **[span_10](start_span)Inheritance:** The mechanism of acquiring all the properties and behaviors of one class to another[span_10](end_span). [span_11](start_span)It provides **code reusability** and establishes relationships between different classes[span_11](end_span). [span_12](start_span)A class that inherits is a **subclass** (or child class), and the class whose properties are inherited is the **superclass** (or parent class)[span_12](end_span).
+* **[span_13](start_span)Polymorphism:** The ability to perform one task in different ways[span_13](end_span). [span_14](start_span)For example, a `Shape` class with a `draw()` method can have different implementations in subclasses like `Triangle`, `Rectangle`, or `Circle`[span_14](end_span). [span_15](start_span)[span_16](start_span)[span_17](start_span)This is supported in Java through method overloading and method overriding[span_15](end_span)[span_16](end_span)[span_17](end_span).
+* **[span_18](start_span)[span_19](start_span)Abstraction:** The process of hiding implementation details and showing only the essential functionality to the user[span_18](end_span)[span_19](end_span). [span_20](start_span)In Java, abstraction is achieved using abstract classes and interfaces[span_20](end_span).
+* **[span_21](start_span)[span_22](start_span)Encapsulation:** The process of wrapping code and data together into a single unit[span_21](end_span)[span_22](end_span). [span_23](start_span)[span_24](start_span)This concept is also known as **data hiding**, where data is hidden inside a class, typically by being declared as private[span_23](end_span)[span_24](end_span).
+
+***
+
+### Java Basics: Classes, Methods, and Objects
+[span_25](start_span)In Java, a class is at the core of a program and serves as a template for an object[span_25](end_span).
+
+#### Defining a Class
+[span_26](start_span)A class is declared using the `class` keyword[span_26](end_span). [span_27](start_span)It can contain instance variables (data) and methods (code)[span_27](end_span).
+
+```java
 class Box {
   // Instance variables
   double width;
@@ -25,88 +34,83 @@ class Box {
   }
 }
 
-The variables (width, height, depth) are called instance variables, and the code within the class is contained in methods (volume()). [cite_start]Both are considered members of the class.
+[cite_start]Variables defined within a class are called instance variables because each object (instance) of the class contains its own copy[cite: 245].
 Creating and Using Objects
-[cite_start]To use a class, you must create an object, or an instance of that class, using the new keyword. [cite_start]The dot (.) operator is used to access the object's instance variables and methods.
+[cite_start]An object is an instance of a class[cite: 134]. [cite_start]You create an object using the new operator, which dynamically allocates memory for it at run time[cite: 267, 268].
 public class BoxDemo {
   public static void main(String args[]) {
-    Box mybox = new Box(); // Declares and allocates a Box object
+    Box mybox = new Box(); // Creates a Box object
     
-    // Assigns values to the instance variables
+    // Accessing instance variables using the dot (.) operator
     mybox.width = 10;
     mybox.height = 20;
     mybox.depth = 15;
     
-    // Calls the method and prints the result
+    // Invoking a method on the object
     double vol = mybox.volume();
     System.out.println("Volume is " + vol); // Output: Volume is 3000.0
   }
 }
 
 Constructors
-[cite_start]A constructor is a special method used to initialize objects when they're created. [cite_start]It has the same name as the class and no return type. [cite_start]If you don't define a constructor, Java provides a default one.
- * [cite_start]Default Constructor: A constructor with no parameters.
-   class Box {
-  double width;
-  // Default constructor
-  Box() {
-    System.out.println("Constructing Box");
-    width = 10;
+[cite_start]Constructors are special member functions used to initialize the objects of a class[cite: 281]. [cite_start]They are invoked when an object is created and have the same name as the class[cite: 282, 283].
+ * [cite_start]Default Constructor (no-arg constructor): A constructor without any parameters[cite: 287]. [cite_start]If no constructor is explicitly defined, the Java compiler provides a default one[cite: 284, 295].
+ * [cite_start]Parameterized Constructor: A constructor that accepts a specific number of parameters to initialize objects with different values[cite: 297].
+<!-- end list -->
+class Box {
+  double width, height, depth;
+  
+  // Parameterized constructor
+  Box(double w, double h, double d) {
+    width = w;
+    height = h;
+    depth = d;
   }
 }
 
- * [cite_start]Parameterized Constructor: A constructor with parameters, used to initialize objects with different values.
-   class Box {
-  double width;
-  // Parameterized constructor
-  Box(double w, double h, double d) {
-    this.width = w;
-    this.height = h;
-    this.depth = d;
+class BoxDemo7 {
+  public static void main(String args[]) {
+    Box mybox1 = new Box(10, 20, 15); // Passes values to the constructor
   }
 }
 
 The this Keyword
-[cite_start]The this keyword refers to the current object inside a method or constructor. It's often used to distinguish between instance variables and local method parameters with the same name, as shown in the parameterized constructor example above.
+[cite_start]The this keyword refers to the object that invoked a method or constructor[cite: 352]. [cite_start]It is used to refer to the current object and can also be used to invoke a current class constructor[cite: 353, 354].
 Method Overloading
-[cite_start]This is a form of polymorphism where a class has two or more methods with the same name but different parameter declarations (number, type, or order of arguments).
+[cite_start]This is a form of polymorphism where a class has two or more methods with the same name but different parameter declarations[cite: 359, 360].
 class OverloadDemo {
-  void test() { // No parameters
+  void test() {
     System.out.println("No parameters");
   }
 
-  void test(int a) { // One integer parameter
+  void test(int a) {
     System.out.println("a: " + a);
   }
 
-  double test(double a) { // One double parameter
-    System.out.println("double a: " + a);
-    return a * a;
+  void test(int a, int b) {
+    System.out.println("a and b: " + a + " " + b);
   }
 }
 
 Access Specifiers
-[cite_start]Access modifiers, also known as access specifiers, control the visibility and scope of a class, method, or variable.
+[cite_start]Access modifiers specify the accessibility (scope) of a data member, method, constructor, or class[cite: 369].
 | Modifier | Within Class | Within Package | Outside Package (by subclass) | Outside Package |
 |---|---|---|---|---|
-| private | Yes | No | No | No |
-| default | Yes | Yes | No | No |
-| protected | Yes | Yes | Yes | No |
-| public | Yes | Yes | Yes | Yes |
-| [cite_start] |  |  |  |  |
- * [cite_start]private: Accessible only within the same class.
- * [cite_start]default: Accessible only within the same package.
- * [cite_start]protected: Accessible within the same package and also by subclasses in different packages. [cite_start]It cannot be applied to a class.
- * [cite_start]public: Accessible from everywhere.
+| Private | Y | N | N | N |
+| Default | Y | Y | N | N |
+| Protected | Y | Y | Y | N |
+| Public | Y | Y | Y | Y |
+ * [cite_start]private: Accessible only within the same class[cite: 371].
+ * [cite_start]default: Accessible only within the same package[cite: 377].
+ * [cite_start]protected: Accessible within the same package and also by subclasses in different packages through inheritance[cite: 381].
+ * [cite_start]public: Accessible everywhere[cite: 387].
 The static Keyword
-The static keyword can be applied to variables, methods, blocks, and nested classes. [cite_start]A static member belongs to the class itself, not to a specific object. [cite_start]This means only a single copy exists and is shared by all objects of that class.
- * [cite_start]Static Variables: Shared among all objects of a class. They are essentially global variables.
- * [cite_start]Static Methods: Can be called without creating an object of the class. [cite_start]The most common example is main(). [cite_start]A static method can only call other static methods and access static data; it cannot use this or super.
+[cite_start]static is a non-access modifier that makes a member belong to the class itself, not to a specific object[cite: 405]. [cite_start]All instances of the class share the same static variable[cite: 399].
+ * [cite_start]Static variables: Declared at the class level and are shared among all objects[cite: 398, 400].
+ * [cite_start]Static methods: Can be accessed without creating an object[cite: 405]. [cite_start]A static method can only call other static methods and access static data, and cannot use the this or super keywords[cite: 408, 409].
 <!-- end list -->
 class StaticDemo {
   static int a = 42;
-  static int b = 99;
-  
   static void callme() {
     System.out.println("a = " + a);
   }
@@ -114,122 +118,121 @@ class StaticDemo {
 
 class StaticByName {
   public static void main(String args[]) {
-    StaticDemo.callme(); // Calling a static method without an object
-    System.out.println("b = " + StaticDemo.b); // Accessing a static variable
+    StaticDemo.callme();
   }
 }
 // Output:
 // a = 42
-// b = 99
 
 finalize() Method
-[cite_start]The finalize() method is called by the garbage collector on an object when it determines there are no more references to the object. [cite_start]Its traditional use was for cleanup, like releasing resources not managed by the garbage collector. [cite_start]However, it is unpredictable and its use is now discouraged in modern Java in favor of better alternatives like try-with-resources.
+[cite_start]The finalize() method is called by the garbage collector just before an object is destroyed[cite: 415, 434]. [cite_start]Its traditional purpose was for resource cleanup[cite: 437]. [cite_start]However, its use is discouraged due to unpredictability and performance issues[cite: 435, 440]. [cite_start]Modern alternatives like try-with-resources are recommended[cite: 443, 452].
 Unit 2: Exception Handling & Streams
 Arrays and Strings
 Arrays
-[cite_start]An array is a collection of elements of a similar data type stored in contiguous memory locations. [cite_start]In Java, arrays are objects and are dynamically allocated. [cite_start]Their length can be found using the .length member. [cite_start]The first element's index is 0. [cite_start]A disadvantage of arrays is their fixed size, which cannot be changed at runtime.
- * [cite_start]One-Dimensional Arrays: A simple list of elements.
-   // Declaration and instantiation
-int a[] = new int[5];
-
-// Initialization
-a[0] = 10;
-
-// Declaration, instantiation, and initialization
-int b[] = {33, 3, 4, 5};
-
- * [cite_start]Multidimensional Arrays: Arrays of arrays, also known as Jagged Arrays.
-   // 2D array declaration
-int twoD[][] = new int[4][5];
-
-// Jagged array (rows have different column sizes)
-int jagged[][] = new int[4][];
-jagged[0] = new int[1];
-jagged[1] = new int[2];
+[cite_start]An array is a collection of similar-type elements with contiguous memory locations[cite: 475]. [cite_start]In Java, arrays are objects, and their length can be determined using the .length member[cite: 476]. [cite_start]A disadvantage is their fixed size[cite: 483].
+ * One-Dimensional Array: A simple list of elements.
+ * [cite_start]Multidimensional Array: An array of arrays, also known as Jagged Arrays[cite: 496].
+<!-- end list -->
+class Testarray1 {
+  public static void main(String args[]) {
+    // Declaration, instantiation, and initialization
+    int a[] = {33, 3, 4, 5};
+    
+    // Prints array elements
+    for(int i = 0; i < a.length; i++) {
+      System.out.println(a[i]);
+    }
+  }
+}
 
 Strings
-[cite_start]In Java, a String is an object that represents a sequence of character values. [cite_start]Strings are immutable, meaning their value cannot be changed after creation.
-There are two ways to create a String object:
- * By string literal: Using double quotes. [cite_start]Java uses a "string constant pool" to reuse identical string literals.
-   String s = "welcome";
-
- * [cite_start]By new keyword: Creates a new string object in heap memory.
-   String s = new String("Welcome");
-
+[cite_start]A string in Java is an object representing a sequence of characters[cite: 518]. [cite_start]Java string objects are immutable[cite: 521].
+ * [cite_start]String Literal: Created using double quotes (e.g., String s = "welcome";)[cite: 522].
+ * [cite_start]new Keyword: Creates a new string object in memory (e.g., String s = new String("Welcome");)[cite: 523].
 StringBuffer Class
-[cite_start]The StringBuffer class is used to create mutable (modifiable) string objects. Its methods allow you to modify the string without creating a new object.
- * append(): Concatenates a string to the end.
-   StringBuffer sb = new StringBuffer("Hello ");
-sb.append("Compiler"); // sb is now "Hello Compiler"
-
- * [cite_start]insert(): Inserts a string at a specified position.
-   sb.insert(1, "Java"); // sb is now "HJavaello Compiler"
-
- * [cite_start]replace(): Replaces a portion of the string.
- * [cite_start]delete(): Deletes a portion of the string.
- * [cite_start]reverse(): Reverses the string.
-Inheritance and Method Overriding
-[cite_start]Inheritance is the mechanism by which one class acquires the properties and behaviors of another. [cite_start]It allows for code reusability and establishing an "is-a" relationship.
-Types of Inheritance
-Java supports three main types of inheritance:
- * [cite_start]Single Inheritance: One class extends one other class.
- * [cite_start]Multilevel Inheritance: A class inherits from a derived class, forming a chain.
- * [cite_start]Hierarchical Inheritance: One class is inherited by multiple subclasses.
-(Multiple and hybrid inheritance are only supported through interfaces in Java) [cite_start].
-The super Keyword
-[cite_start]The super keyword is used to refer to the superclass. It has three main uses:
- * super(): Invokes the parent class's constructor. [cite_start]It must be the first statement in the subclass constructor.
- * [cite_start]super.variable: Refers to a variable in the parent class when it's hidden by a variable with the same name in the subclass.
- * [cite_start]super.method(): Refers to a method in the parent class, especially when it has been overridden in the subclass.
-Method Overriding
-[cite_start]When a method in a subclass has the same name and type signature as a method in its superclass, it is said to override the superclass method. [cite_start]The subclass's version of the method is used when called on a subclass object.
-class A {
-  void show() {
-    System.out.println("i and j: ");
-  }
-}
-
-class B extends A {
-  // This overrides show() in A
-  void show() {
-    System.out.println("k: ");
-  }
-}
-
-class Override {
+[cite_start]The StringBuffer class is used to create mutable (modifiable) string objects[cite: 536].
+ * [cite_start]append(): Concatenates the given argument with the string[cite: 536].
+ * [cite_start]insert(): Inserts a string at a specified position[cite: 538].
+ * [cite_start]replace(): Replaces a portion of the string[cite: 539].
+ * [cite_start]delete(): Deletes a portion of the string[cite: 540].
+ * [cite_start]reverse(): Reverses the current string[cite: 541].
+<!-- end list -->
+class StringBufferExample {
   public static void main(String args[]) {
-    B subOb = new B();
-    subOb.show(); // This calls show() in B
+    StringBuffer sb = new StringBuffer("Hello ");
+    sb.append("Compiler");
+    System.out.println(sb); // prints Hello Compiler
   }
 }
 
+Inheritance and Method Overriding
+[cite_start]Inheritance is the mechanism of a subclass acquiring the properties and behaviors of a superclass[cite: 640]. [cite_start]It is used for method overriding and code reusability[cite: 643].
+Types of Inheritance
+ * [cite_start]Single Inheritance: One class extends one other class[cite: 652].
+ * [cite_start]Multilevel Inheritance: One class inherits from a derived class[cite: 654].
+ * [cite_start]Hierarchical Inheritance: One class is inherited by multiple subclasses[cite: 658].
+ * Multiple Inheritance: One class extends more than one class. [cite_start]It is not directly supported in Java but can be achieved through interfaces[cite: 665].
+The super Keyword
+[cite_start]The super keyword refers to the superclass[cite: 666].
+ * [cite_start]super(): Invokes the constructor of the parent class[cite: 666, 668].
+ * [cite_start]super.variable: Refers to a variable in the parent class[cite: 667].
+ * [cite_start]super.method(): Refers to a method of the parent class[cite: 667, 683].
+<!-- end list -->
+class ParentClass {
+  void disp() {
+    System.out.println("Parent Class method");
+  }
+}
+
+public class SubClass extends ParentClass {
+  void disp() {
+    System.out.println("Child Class method");
+  }
+  
+  void show() {
+    super.disp(); // Calls the Parent Class disp() method
+    disp();       // Calls the Child Class disp() method
+  }
+  
+  public static void main(String args[]) {
+    SubClass s = new SubClass();
+    s.show();
+  }
+}
+// Output:
+// Parent Class method
+// Child Class method
+
+[cite_start]Method overriding occurs when a method in a subclass has the same name and type signature as a method in its superclass[cite: 690, 691]. [cite_start]When called, the subclass's version is executed[cite: 692].
 Abstract Classes and Interfaces
 Abstract Classes
-[cite_start]An abstract class is a class declared with the abstract keyword that cannot be instantiated (you can't create an object of it directly). [cite_start]It can have a mix of abstract methods (without implementation) and non-abstract methods (with a body).
- * [cite_start]Abstract Method: A method with the abstract keyword and no body. [cite_start]Subclasses that extend an abstract class must provide an implementation for all its abstract methods, or they must also be declared abstract.
+[cite_start]An abstract class is declared with the abstract keyword and cannot be instantiated[cite: 725, 729]. [cite_start]It can have abstract methods (without a body) and non-abstract methods (with a body)[cite: 726].
+ * [cite_start]Abstract method: A method declared with the abstract keyword and no implementation[cite: 730]. [cite_start]Subclasses must implement all abstract methods[cite: 856].
 <!-- end list -->
-abstract class Shape {
-  abstract void draw(); // Abstract method
+abstract class Bike {
+  abstract void run(); // Abstract method
 }
 
-class Circle extends Shape {
-  void draw() {
-    System.out.println("drawing circle");
+class Honda extends Bike {
+  void run() {
+    System.out.println("running safely..");
   }
 }
 
-public class TestAbstraction {
+class TestAbstraction2 {
   public static void main(String args[]) {
-    Shape s = new Circle(); // You can't do `new Shape()`
-    s.draw(); // Output: drawing circle
+    Bike obj = new Honda();
+    obj.run();
   }
 }
+// Output:
+// running safely..
 
 Interfaces
-[cite_start]An interface is a blueprint of a class that can contain only static constants and abstract methods. [cite_start]It provides a mechanism for achieving total abstraction and simulating multiple inheritance.
- * [cite_start]All methods in an interface are implicitly public and abstract.
- * [cite_start]All variables in an interface are implicitly public, static, and final.
- * [cite_start]A class uses the implements keyword to use an interface and must provide an implementation for all its methods.
+[cite_start]An interface is a blueprint of a class that provides a mechanism to achieve abstraction and multiple inheritance[cite: 839]. [cite_start]It is declared using the interface keyword[cite: 840].
+ * [cite_start]All interface methods are public and abstract by default[cite: 857].
+ * [cite_start]All interface variables are public, static, and final by default[cite: 858].
+ * [cite_start]A class uses the implements keyword to use an interface[cite: 854].
 <!-- end list -->
 interface Drawable {
   void draw();
@@ -241,56 +244,40 @@ class Circle implements Drawable {
   }
 }
 
+class TestInterface1 {
+  public static void main(String args[]) {
+    Drawable d = new Circle();
+    d.draw(); // Output: drawing circle
+  }
+}
+
 Exception Handling
-[cite_start]An exception is a problem that occurs during program execution, disrupting the normal flow.
- * [cite_start]Errors vs. Exceptions: Errors indicate serious, abnormal conditions that a program shouldn't try to handle (e.g., memory errors). [cite_start]Exceptions are conditions within the code that a developer can handle.
- * Keywords:
-   * [cite_start]try: Encloses the "protected code" that might throw an exception.
-   * [cite_start]catch: Catches and handles the exception thrown by the try block.
-   * finally: A block of code that always executes, regardless of whether an exception occurred or was handled. [cite_start]It's used for cleanup (e.g., closing a connection).
-   * [cite_start]throw: Used to explicitly throw an exception.
-   * [cite_start]throws: Declares that a method might throw an exception, postponing the handling to the calling method.
+[cite_start]An exception is a problem that arises during a program's execution, disrupting its normal flow[cite: 760]. [cite_start]If an exception is not handled, the program terminates abnormally[cite: 761].
+ * [cite_start]try block: Encloses code that might generate an exception[cite: 769].
+ * [cite_start]catch block: Placed immediately after a try block to catch a specific type of exception[cite: 771].
+ * [cite_start]finally block: Always executes, whether or not an exception occurs, and is typically used for cleanup[cite: 772].
 <!-- end list -->
-public class ExceptionDemo {
+class Exc2 {
   public static void main(String args[]) {
     try {
       int d = 0;
-      int a = 42 / d; // This line throws an ArithmeticException
-      System.out.println("This won't be printed.");
+      int a = 42 / d;
     } catch (ArithmeticException e) {
       System.out.println("Division by zero.");
-    } finally {
-      System.out.println("This always executes.");
     }
+    System.out.println("After catch statement.");
   }
 }
 // Output:
 // Division by zero.
-// This always executes.
+// After catch statement.
 
 I/O Streams
-[cite_start]Java uses streams for input and output operations, which are a sequence of data. [cite_start]The java.io package contains all the necessary classes.
- * [cite_start]Byte Streams: Used for reading and writing 8-bit bytes (e.g., FileInputStream, FileOutputStream).
- * [cite_start]Character Streams: Used for reading and writing 16-bit Unicode characters (e.g., FileReader, FileWriter).
+[cite_start]A stream is a sequence of data[cite: 879]. [cite_start]Java uses streams for input and output operations, and they are divided into two main categories[cite: 876, 878]:
+ * [cite_start]Byte Streams: Used for 8-bit byte input and output (e.g., FileInputStream, FileOutputStream)[cite: 882].
+ * [cite_start]Character Streams: Used for 16-bit Unicode character input and output (e.g., FileReader, FileWriter)[cite: 883].
 InputStream and OutputStream
- * [cite_start]InputStream: Reads data from a source. [cite_start]It's an abstract class and defines methods like read(), available(), and close().
- * [cite_start]OutputStream: Writes data to a destination. [cite_start]It's an abstract class and defines methods like write(), flush(), and close().
-Buffered Streams
-[cite_start]Buffered streams, like BufferedInputStream and BufferedOutputStream, use an internal buffer to make I/O operations more efficient by reducing the number of times data is accessed from the underlying source.
-import java.io.*;
+ * [cite_start]InputStream: Reads data from a source[cite: 880]. [cite_start]The InputStream class is an abstract class and defines methods like read(), available(), and close()[cite: 890, 893].
+ * [cite_start]OutputStream: Writes data to a destination[cite: 881]. [cite_start]The OutputStream class defines methods like write(), close(), and flush()[cite: 895, 897].
+<!-- end list -->
 
-public class BufferedOutputStreamExample {
-  public static void main(String args[]) throws Exception {
-    FileOutputStream fout = new FileOutputStream("D:\\testout.txt");
-    BufferedOutputStream bout = new BufferedOutputStream(fout);
-    String s = "Welcome to cse department";
-    byte b[] = s.getBytes();
-    bout.write(b);
-    bout.flush();
-    bout.close();
-    fout.close();
-    System.out.println("Success...");
-  }
-}
-
-These notes cover the fundamental concepts and code examples for both units. Remember to study the differences between related concepts, like method overloading vs. overriding, and classes vs. interfaces, as these are common exam questions. Good luck! ✍️
