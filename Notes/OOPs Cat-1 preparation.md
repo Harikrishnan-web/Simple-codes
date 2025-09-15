@@ -341,3 +341,336 @@ For details and more examples, refer to the full problem set in your attached ma
 - **Exam preparation**: Focus on concept definitions and code writing ability.
 
 These notes are structured to ensure maximum coverage to tackle any question. Focus especially on explanations and the commented code examples[1].
+
+***
+
+# OOP Unit II – Exception Handling & Streams (CS23312)
+
+***
+
+## Arrays
+
+An **array** is a collection of elements of the same type, stored in contiguous memory and indexed starting from 0[1].
+
+### One-Dimensional Array
+
+```java
+int[] a = new int; // Declaration and instantiation
+a=10; a[1]=20; a=70; a=40; a=50;
+for(int i=0; i<a.length; i++)
+    System.out.println(a[i]);
+```
+- Retrieve length using `.length`
+- Can be passed to methods
+
+### Multidimensional Array
+
+```java
+int[][] twoD = new int; // 2D array
+for(int i=0; i<4; i++)
+    for(int j=0; j<5; j++)
+        twoD[i][j] = i * 5 + j;
+```
+Arrays of arrays ("jagged arrays") are possible by allocating subarrays separately[1].
+
+***
+
+## Java Comments & JavaDoc
+
+- **Single line**: `// This is a comment`
+- **Multi-line**:
+  ```java
+  /* This is a 
+     multi-line comment */
+  ```
+- **Documentation**:
+  ```java
+  /** This is a doc comment for API documentation */
+  public class Example {
+      /** Returns sum of two integers */
+      public int add(int a, int b) { return a + b; }
+  }
+  ```
+JavaDoc comments are used for generating HTML documentation[1].
+
+***
+
+## Strings and StringBuffer
+
+### String Class
+
+- Immutable sequence of characters:
+
+```java
+String s1 = "Hello";
+String s2 = new String("Hello");
+System.out.println(s1.equals(s2)); // true
+System.out.println(s1.charAt(0));  // 'H'
+System.out.println(s1.length());   // 5
+```
+
+#### Common String Methods
+
+| Method                         | Description                           |
+|------------------------------- |---------------------------------------|
+| `charAt(int idx)`              | Gets character at index               |
+| `toLowerCase()`, `toUpperCase()` | Case conversion                      |
+| `concat(String)`               | Concatenates strings                  |
+| `replace(char, char)`          | Replaces character                    |
+| `split(String)`                | Splits string                         |
+| `substring(int, int)`          | Gets substring                        |
+| `equals(Object)`               | Compares for equality                 |
+| `isEmpty()`                    | Checks for empty string               |
+| `indexOf(String)`              | Finds index                           |
+| `trim()`                       | Removes leading/trailing spaces       |
+
+### StringBuffer Class
+
+- Mutable string manipulation:
+
+```java
+StringBuffer sb = new StringBuffer("Hello");
+sb.append("World");       // HelloWorld
+sb.insert(1, "Java");     // HJavaelloWorld
+sb.replace(0, 5, "Hi");   // HiWorld
+sb.delete(1, 3);          // Hld
+sb.reverse();             // dlH
+System.out.println(sb);   // Prints final value
+```
+
+#### Buffer Capacity Example
+
+```java
+StringBuffer sb = new StringBuffer();
+System.out.println(sb.capacity()); // Default 16
+sb.ensureCapacity(50);
+System.out.println(sb.capacity()); // Increased as needed
+```
+StringBuffer is used for efficient, mutable string operations[1].
+
+***
+
+## Packages
+
+A **package** is a collection of related classes, interfaces, and sub-packages. Use the `package` keyword:
+
+```java
+package mypack;
+
+public class Balance {
+    String name;
+    double bal;
+    Balance(String n, double b) { name = n; bal = b; }
+    void show() { System.out.println(name + ": " + bal); }
+}
+```
+
+Compile and run using fully qualified class name. Example: `java mypack.Balance`
+
+Benefits:
+- Organizes code
+- Prevents namespace collision
+- Provides access control[1]
+
+***
+
+## Interfaces
+
+An **interface** declares a set of methods that classes must implement, enabling abstraction and multiple inheritance.
+
+```java
+interface Drawable {
+    void draw(); // Method is implicitly public and abstract
+}
+
+class Rectangle implements Drawable {
+    public void draw() { System.out.println("drawing rectangle"); }
+}
+```
+
+Multiple interfaces can be implemented:
+
+```java
+interface Printable { void print(); }
+interface Showable { void show(); }
+
+class A implements Printable, Showable {
+    public void print() { System.out.println("Hello"); }
+    public void show() { System.out.println("Welcome"); }
+}
+```
+Interface methods are always public, abstract, interface variables are public, static, final[1].
+
+***
+
+## Inheritance
+
+Inheritance enables code reuse and hierarchical relationships[1].
+
+### Single Inheritance
+
+```java
+class A { public void dispA() { System.out.println("A"); } }
+class B extends A { public void dispB() { System.out.println("B"); } }
+```
+
+### Multilevel
+
+```java
+class C extends B { public void dispC() { System.out.println("C"); } }
+```
+
+### Hierarchical
+
+Multiple classes inherit from the same parent:
+
+```java
+class D extends A { ... }
+class E extends A { ... }
+```
+
+### super Keyword
+
+- `super()` calls parent constructor
+- `super.variable` accesses parent's variable
+- `super.method()` calls parent's method
+
+```java
+class Parent { void display() { System.out.println("Parent"); } }
+class Child extends Parent {
+    void display() { System.out.println("Child"); }
+    void show() { display(); super.display(); }
+}
+```
+
+***
+
+## Abstract Classes
+
+Abstract classes can have abstract and concrete methods.
+
+```java
+abstract class Shape { abstract void draw(); }
+class Circle extends Shape { void draw() { System.out.println("Circle"); } }
+```
+Cannot create direct instances; must be subclassed.
+
+***
+
+## Final Keyword
+
+- **Final variable**: cannot be changed.
+- **Final method**: cannot be overridden.
+- **Final class**: cannot be extended.
+
+```java
+final int SPEED = 60;
+final class Base { ... }
+class Derived extends Base { } // Error
+```
+
+***
+
+## Exception Handling
+
+Exceptions are errors occurring during program execution. Java provides these keywords:
+- **try**: wrap risky code
+- **catch**: handle exception
+- **finally**: always runs
+- **throw**: manually trigger exception
+- **throws**: specify possible exception in method signature[1]
+
+### Example: Basic Exception Handling
+
+```java
+try {
+    int a = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println("Division by zero!");
+} finally {
+    System.out.println("Cleanup.");
+}
+```
+
+### Exception Hierarchy
+
+All exception classes derive from `Throwable`, mostly via `Exception`.
+
+#### User-Defined Exception Example
+
+```java
+class MyException extends Exception {
+    MyException(String message) { super(message); }
+}
+
+try {
+    throw new MyException("Custom error");
+} catch (MyException e) {
+    System.out.println(e.getMessage());
+}
+```
+***
+
+## Dynamic Method Dispatch
+
+Decides which overridden method to call at runtime:
+
+```java
+class A { void m1() { System.out.println("A"); } }
+class B extends A { void m1() { System.out.println("B"); } }
+A ref;
+ref = new B();
+ref.m1(); // Calls B's m1() due to runtime type
+```
+
+***
+
+## I/O Streams
+
+Java uses **streams** for data input/output. Types:
+- **InputStream/OutputStream**: byte streams
+- **Reader/Writer**: character streams
+- **Buffered Streams**: buffer the read/write for efficiency
+
+### Basic File I/O
+
+```java
+import java.io.*;
+
+FileInputStream fin = new FileInputStream("test.txt");
+int i;
+while((i = fin.read()) != -1)
+    System.out.print((char) i);
+fin.close();
+```
+
+### Buffered Streams Example
+
+```java
+FileOutputStream fout = new FileOutputStream("test.txt");
+BufferedOutputStream bout = new BufferedOutputStream(fout);
+String s = "Hello World";
+bout.write(s.getBytes());
+bout.flush(); // Ensures writing out all data
+bout.close(); fout.close();
+```
+***
+
+## Summary Table – Topic Mapping
+
+| Topic                      | Covered        |
+|----------------------------|:-------------:|
+| Arrays                     | Yes           |
+| Comments & JavaDoc         | Yes           |
+| Strings/StringBuffer       | Yes           |
+| Packages & Interfaces      | Yes           |
+| Inheritance & super        | Yes           |
+| Abstract/Final keyword     | Yes           |
+| Exception handling         | Yes           |
+| Dynamic dispatch           | Yes           |
+| I/O streams                | Yes           |
+| Buffered/File Streams      | Yes           |
+
+***
+
+
