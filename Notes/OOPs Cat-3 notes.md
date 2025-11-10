@@ -1197,7 +1197,7 @@ _This output is from the statement: `System.out.println(stub.add(34, 4));` when 
 - Server and client complete code
 
 ---
-# 7) Java RMI and Object Serialization
+# 6) Java RMI and Object Serialization
 
 ### **What is Serialization in Java?**
 
@@ -1331,4 +1331,164 @@ Filename: example.txt
 - **How RMI uses serialized objects for method parameters and return values across JVMs**
 - **Full code sample for a serializable class, and use in a real RMI scenario**
 - **Output expectation when client receives and uses the serializable object**
+---
+
+# 7) Connecting to Databases with JDBC – 5 Steps**
+
+JDBC (Java Database Connectivity) is a Java API for interacting with databases from Java applications.
+
+### **The Five Steps**:
+
+### **1. Register the Driver Class**
+
+Most commonly, you load the database driver class dynamically.  
+*Note: From JDBC 4.0, this step is optional if you have the vendor JAR in classpath.*
+
+```java
+Class.forName("oracle.jdbc.driver.OracleDriver");
+```
+
+**For MySQL**:  
+```java
+Class.forName("com.mysql.cj.jdbc.Driver");
+```
+If successful, this loads and registers the driver with the JDBC DriverManager.  
+(If the class is missing, you'll get `ClassNotFoundException`.)
+
+***
+
+### **2. Create the Connection Object**
+
+Use `DriverManager.getConnection()` to establish a connection.
+
+```java
+Connection con = DriverManager.getConnection(
+    "jdbc:oracle:thin:@localhost:1521:xe", "system", "password");
+```
+or (for MySQL):
+
+```java
+Connection con = DriverManager.getConnection(
+    "jdbc:mysql://localhost:3306/books", "root", "password");
+```
+- Returns a `Connection` object if successful.
+- If the DB is down, wrong username/password, or JDBC URL is wrong, you'll get a `SQLException`.
+
+***
+
+### **3. Create the Statement Object**
+
+Use the `createStatement()` method to create a `Statement`.
+
+```java
+Statement stmt = con.createStatement();
+```
+- This `Statement` object will be used to execute SQL queries.
+
+***
+
+### **4. Execute Queries**
+
+Use the `executeQuery()` method for reading data (`SELECT`), and `executeUpdate()` for updates (`INSERT`, `UPDATE`, `DELETE`).
+
+**Example – Selecting Data**:
+
+```java
+ResultSet rs = stmt.executeQuery("select * from emp");
+while (rs.next()) {
+    System.out.println(rs.getInt(1) + " " + rs.getString(2));
+}
+```
+- This prints each row from the "emp" table, displaying the first two columns.
+
+***
+
+### **5. Close the Connection**
+
+It's important to release database resources by closing the connection.
+
+```java
+con.close();
+```
+By closing the connection object, statement and ResultSet will be closed automatically.
+
+***
+
+## **Complete Example (from PDF): Retrieve Data from MySQL**
+
+```java
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class RetrieveDataExample {
+    public static void main(String[] args) {
+        try {
+            // 1. Load the MySQL JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // 2. Establish connection with the database
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/books", "root", "password"
+            );
+
+            if (con != null) {
+                // 3. SQL query to retrieve data from the 'book' table
+                String selectQuery = "SELECT * FROM book";
+                Statement statement = con.createStatement();
+
+                // 4. Execute the query and get the result set
+                ResultSet resultSet = statement.executeQuery(selectQuery);
+                System.out.println("The Available Data\n");
+
+                // 5. Iterate through the result set and print the data
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String author_name = resultSet.getString("author");
+                    String book_name = resultSet.getString("name");
+                    String book_price = resultSet.getString("price");
+                    // print the retrieved data
+                    System.out.println(
+                        "ID: " + id +
+                        ", Author_Name: " + author_name +
+                        ", Book_Name: " + book_name +
+                        ", Book_Price " + book_price
+                    );
+                }
+            } else {
+                System.out.println("Not Connected...");
+            }
+        } catch (Exception e) {
+            System.out.println("Exception is " + e.getMessage());
+        }
+    }
+}
+```
+
+***
+
+## **Expected Output (Assuming Book Table Data is Present):**
+```
+The Available Data
+
+ID: 1, Author_Name: John Doe, Book_Name: Java Basics, Book_Price 400
+ID: 2, Author_Name: Mary Smith, Book_Name: NetworkX, Book_Price 350
+...
+```
+
+Output will display every row present in the `book` table, formatted as above.
+
+***
+
+## **Summary Table**
+
+| Step             | Code/Command                                                                | Output If Success                    |
+|------------------|----------------------------------------------------------------------------|--------------------------------------|
+| Register Driver  | `Class.forName(...)`                                                       | (No output, or ClassNotFoundException) |
+| Create Conn      | `DriverManager.getConnection(...)`                                         | (No output, or SQLException)         |
+| Create Statement | `con.createStatement()`                                                    | (No output)                          |
+| Execute Query    | `statement.executeQuery("SELECT ...")`                                     | Rows printed by loop                 |
+| Close Conn       | `con.close()`                                                              | (No output)                          |
+
 ---
