@@ -416,3 +416,104 @@ Think of socket programming like a **phone call**:
 ---
 
 This detailed explanation covers the fundamentals of socket programming in Java. The key is understanding that sockets provide a communication channel between two programs, with one acting as server (listener) and the other as client (connector).
+
+---
+### 1. **Java InetAddress Class**
+
+- **Purpose**: The `InetAddress` class represents an IP address, which helps identify resources on a network (like websites or devices).
+- **IP Address**: Every device on a network has a unique IP address (either IPv4 or IPv6) that looks like `192.168.0.1` or a longer hex value in the case of IPv6.
+
+#### **What does InetAddress do?**
+- Lets you find the IP for a given hostname (like `www.google.com`).
+- Lets you get the hostname for a given IP address.
+- Handles both **Unicast** (single target) and **Multicast** (group of devices) addresses.
+- Maintains a cache of successful and unsuccessful hostname lookups to improve efficiency.
+
+#### **Key Features**
+- **IPv4**: Oldest, most common; 32-bit addresses (over 4 billion addresses).
+  - *Connectionless protocol, easy to use, but limited address space.*
+- **IPv6**: Newer; 128-bit addresses (huge address space).
+  - *Supports quality of service, hierarchical structure, solves IPv4 limitations.*
+
+#### **How to Use (Typical Example):**
+```java
+import java.net.*;
+
+public class InetDemo {
+    public static void main(String args[]) {
+        InetAddress ip = InetAddress.getByName("www.javatpoint.com");
+        System.out.println("Host Name: " + ip.getHostName());
+        System.out.println("IP Address: " + ip.getHostAddress());
+    }
+}
+```
+- **Output Example:**
+  - Host Name: www.javatpoint.com
+  - IP Address: 172.67.196.82
+
+***
+
+### 2. **Java URL Class**
+
+- **Purpose**: The `URL` class represents a Uniform Resource Locator, commonly known as a web address.
+- **What does a URL contain?**
+  - **Protocol** (e.g., http, https)
+  - **Server name/IP Address** (e.g., `www.google.com`)
+  - **Optional port number** (e.g., `:8080`)
+  - **File or directory path** (e.g., `/index.html` or `/search?q=java`)
+  
+#### **Constructors and Usage**
+- Create a URL by string: `new URL("https://www.javatpoint.com/java-tutorial")`
+- More options: define protocol, host, port, file explicitly.
+
+#### **Useful Methods**
+- `getProtocol()` — returns the protocol (e.g., http)
+- `getHost()` — returns host name (server)
+- `getPort()` — returns port number (returns -1 if not specified)
+- `getFile()` — returns file or directory
+- `getQuery()` — returns query string after `?`
+- `getPath()` — returns path part after host
+
+#### **Example Usage:**
+```java
+import java.net.*;
+
+public class URLDemo {
+    public static void main(String args[]) {
+        URL url = new URL("https://www.google.com/search?q=javatpoint");
+        System.out.println("Protocol: " + url.getProtocol());
+        System.out.println("Host Name: " + url.getHost());
+        System.out.println("Port Number: " + url.getPort());           // -1 if not specified
+        System.out.println("Default Port Number: " + url.getDefaultPort());
+        System.out.println("Query String: " + url.getQuery());
+        System.out.println("Path: " + url.getPath());
+        System.out.println("File: " + url.getFile());
+    }
+}
+```
+- **Output Example:**
+  - Protocol: https
+  - Host Name: www.google.com
+  - Port Number: -1
+  - Default Port Number: 443
+  - Query String: q=javatpoint
+  - Path: /search
+  - File: /search?q=javatpoint
+
+***
+
+### **Summary Table**
+
+| Feature                               | InetAddress                      | URL                                |
+|----------------------------------------|----------------------------------|------------------------------------|
+| Represents                            | IP Address                       | Web Address (with protocol)        |
+| Main Use                              | Networking: find IP <-> hostname | Locate/access resource on the web  |
+| Key Methods                           | getByName(), getHostName(),      | getProtocol(), getHost(),          |
+|                                        | getHostAddress()                 | getPort(), getFile(), getQuery()   |
+| Example Use                           | Connecting to hosts/devices      | Reading web content, parsing URLs  |
+
+***
+
+**In short:**  
+- Use `InetAddress` when you need to handle network addresses programmatically (e.g., connect to servers using their hostname or IP).
+- Use `URL` to represent and dissect web addresses, or connect/read from them.[1]
