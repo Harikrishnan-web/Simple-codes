@@ -895,3 +895,157 @@ class ClientHandler implements Runnable {
 - **Server and Client Programs:** Client file – single class; Server file – server class and `ClientHandler` for multithreading.
 - **Java supports concurrent execution (multithreading) for maximum CPU usage.**
 - **Debugging and maintenance are harder, but performance and responsiveness improve greatly.**
+
+  ---
+# 5) Introduction to RMI (Remote Method Invocation) in Java
+
+- **RMI** is a Java API that enables the creation of distributed applications—allowing methods to be called on objects located in different JVMs, possibly on different machines.
+- **Remote Communication:** Achieved using *stub* (client-side proxy) and *skeleton* (server-side proxy, removed in newer Java versions).
+
+***
+
+### **Stub & Skeleton**
+
+**Stub** (Client Side):
+- Acts as a gateway for outgoing requests.
+- Represents the remote object at the client side.
+- Handles: connection, parameter marshaling (serializing), waits for the result, returns value to the caller.
+
+**Skeleton** (Server Side, pre-Java 2):
+- Receives incoming requests, unmarshals parameters, invokes actual remote method, marshals and returns the result.
+- *Note:* Java 2 and newer use dynamic proxies so skeleton is no longer needed.
+
+***
+
+## **Steps for Creating RMI Application**
+
+### **1. Create the Remote Interface**
+
+- Extend `java.rmi.Remote`.
+- All methods must declare `throws RemoteException`.
+
+```java
+import java.rmi.*;
+public interface Adder extends Remote {
+    public int add(int x, int y) throws RemoteException;
+}
+```
+
+***
+
+### **2. Provide Implementation of Remote Interface**
+
+- Extend `UnicastRemoteObject` (or use exportObject).
+- Define a constructor that throws `RemoteException`.
+
+```java
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class AdderRemote extends UnicastRemoteObject implements Adder {
+    AdderRemote() throws RemoteException {
+        super();
+    }
+    public int add(int x, int y) { return x + y; }
+}
+```
+
+***
+
+### **3. Compile Implementation and Create Stub (and Skeleton) with rmic Tool**
+
+- *Generate stub (and skeleton, if needed) with:*
+```
+rmic AdderRemote
+```
+
+***
+
+### **4. Start the RMI Registry**
+
+- Use the `rmiregistry` tool.
+- Example (on port 5000):
+```
+rmiregistry 5000
+```
+
+***
+
+### **5. Create and Run the Server Application**
+
+- Bind your remote object to the registry using `Naming.rebind`.
+
+```java
+import java.rmi.*;
+public class MyServer {
+    public static void main(String args[]) {
+        try {
+            Adder stub = new AdderRemote();
+            Naming.rebind("rmi://localhost:5000/sonoo", stub);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+
+***
+
+### **6. Create and Run the Client Application**
+
+- Lookup the remote object by name and call its method.
+
+```java
+import java.rmi.*;
+public class MyClient {
+    public static void main(String args[]) {
+        try {
+            Adder stub = (Adder)Naming.lookup("rmi://localhost:5000/sonoo");
+            System.out.println(stub.add(34, 4));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+
+***
+
+### **How to Run the RMI Example**
+
+1. **Compile all Java files:**
+    ```
+    javac *.java
+    ```
+2. **Create stub (and skeleton if necessary):**
+    ```
+    rmic AdderRemote
+    ```
+3. **Start the RMI registry in a terminal:**
+    ```
+    rmiregistry 5000
+    ```
+4. **Start the server in another terminal:**
+    ```
+    java MyServer
+    ```
+5. **Start the client in another terminal:**
+    ```
+    java MyClient
+    ```
+**Output Example:**  
+Client prints:  
+```
+38
+```
+
+***
+
+### **Important PDF Details Included**
+
+- **RMI enables distributed computing—method calls across JVM/machines.**
+- **Stub acts as client proxy, skeleton as server proxy (not used in new Java).**
+- **Six steps detailed: interface, implementation, stub, registry, server, client.**
+- **Complete Java code for each file.**
+- **All required commands for rmic, rmiregistry, compiling, and running given.**
+---
