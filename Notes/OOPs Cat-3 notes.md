@@ -1,6 +1,6 @@
-# Socket Programming in Java - Detailed Explanation
-
-## 1) What is Socket Programming?
+# Unit 4 
+---
+# 1) What is Socket Programming?
 
 **Socket programming** is a way of connecting two nodes (computers) on a network to communicate with each other. Think of it like a telephone connection:
 - One socket (node) **listens** on a particular port at an IP address
