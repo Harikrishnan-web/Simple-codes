@@ -383,4 +383,77 @@ public class HelloJavaFX extends Application {
 ```
 Expected Output:  
 A window titled "JavaFX Example" of size 400x200 pixels displaying the label "Hello JavaFX!" in the center of the window.
---
+---
+# IMP code:
+
+
+```java
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class SimpleInputOutputSwing {
+
+    // Constructor to set up the GUI
+    public SimpleInputOutputSwing() {
+        // Create a new JFrame (main window)
+        JFrame frame = new JFrame("Simple Input Output Example");
+        frame.setSize(400, 150);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null); // using absolute positioning for simplicity
+
+        // Create a label to prompt the user
+        JLabel promptLabel = new JLabel("Enter your name:");
+        promptLabel.setBounds(20, 20, 120, 25);
+        frame.add(promptLabel);
+
+        // Create a text field for user input
+        JTextField inputField = new JTextField();
+        inputField.setBounds(140, 20, 200, 25);
+        frame.add(inputField);
+
+        // Create a button that triggers the action
+        JButton submitButton = new JButton("Submit");
+        submitButton.setBounds(140, 60, 100, 30);
+        frame.add(submitButton);
+
+        // Create a label to display output
+        JLabel outputLabel = new JLabel("");
+        outputLabel.setBounds(20, 100, 350, 25);
+        frame.add(outputLabel);
+
+        // Add event listener to the button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get text from text field
+                String name = inputField.getText();
+                // Set the output label text
+                outputLabel.setText("Hello, " + name + "! Welcome to Java Swing.");
+            }
+        });
+
+        // Make the frame visible
+        frame.setVisible(true);
+    }
+
+    // Main method to start the program
+    public static void main(String[] args) {
+        // Run GUI in the Event Dispatch Thread for thread safety
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new SimpleInputOutputSwing();
+            }
+        });
+    }
+}
+```
+
+### How this code works:
+- A `JFrame` is created as the main window.
+- A `JLabel` prompts the user to enter their name.
+- A `JTextField` takes input from the user.
+- A `JButton` listens for clicks.
+- When the button is clicked, the text from the `JTextField` is read and displayed in another `JLabel`.
+- The GUI uses absolute positioning (`setBounds`), which is simple but not recommended for complex layouts.
