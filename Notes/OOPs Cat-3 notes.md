@@ -744,4 +744,154 @@ ds.close();
 - Real-world, step-by-step instructions and output expectations
 - Features, advantages, and reasons for protocol choice
 
+---
+# 4) Multi-threaded Servers in Java
+
+**Definition:**  
+A server having more than one thread is called a **multi-threaded server**.  
+When a client sends a request, the server generates a thread for that client, allowing simultaneous processing of multiple client requests.
+
 ***
+
+### **Why Do We Need Multi-threaded Servers?**
+
+- Accept **multiple requests** from different clients at the same time.
+- Respond **quickly and efficiently** as each client connection is handled by a separate thread.
+- **Waiting time decreases**; in single-threaded, clients have to wait for previous client response.
+- **Threads are independent;** an error in one doesn’t affect others.
+
+***
+
+### **Advantages**
+- **Quick, efficient response** to growing client queries.
+- **Decreased waiting time** for users.
+- **Thread independence.**
+- **Issues in one thread** don’t affect others.
+
+### **Disadvantages**
+- **More complicated code.**
+- **Difficult to debug** and analyze cause of errors in a thread-filled environment.
+
+***
+
+### **How Java Creates Threads**
+
+- **Thread**: A light-weight process within a process. Allows parallel execution of code.
+- **Creation Methods:**
+  - **Extending Thread class**
+  - **Implementing Runnable Interface**
+
+#### **Thread By Extending Thread Class**
+```java
+class MultithreadingDemo extends Thread {
+    public void run() {
+        try {
+            System.out.println("Thread " + Thread.currentThread().getId() + " is running");
+        } catch(Exception e) {
+            System.out.println("Exception is caught");
+        }
+    }
+}
+
+public class Multithread {
+    public static void main(String[] args) {
+        int n = 8; // Number of threads
+        for (int i = 0; i < n; i++) {
+            MultithreadingDemo object = new MultithreadingDemo();
+            object.start();
+        }
+    }
+}
+```
+**Output:**
+```
+Thread 15 is running
+Thread 14 is running
+Thread 16 is running
+Thread 12 is running
+Thread 11 is running
+Thread 13 is running
+Thread 18 is running
+Thread 17 is running
+```
+
+***
+
+## **Handling Multiple Client Connections**
+
+**Concept:**  
+To handle multiple clients, server must start a separate thread for each client connection. This allows the main server thread to keep accepting new connections.
+
+**Typical Structure:**
+
+1. **Main Server:** Waits for clients.
+2. **ClientHandler:** Handles communication in a dedicated thread.
+3. **Each client** gets its own thread.
+
+***
+
+### **Multi-threaded Server Example (from PDF):**
+
+**Server Side Code**
+```java
+import java.net.*;
+import java.io.*;
+
+public class Server {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = null;
+        boolean listening = true;
+        try {
+            serverSocket = new ServerSocket(4444);
+        } catch (IOException e) {
+            System.err.println("Could not listen on port 4444.");
+            System.exit(-1);
+        }
+        while (listening) {
+            new Thread(new ClientHandler(serverSocket.accept())).start();
+        }
+        serverSocket.close();
+    }
+}
+```
+**Details:**
+- The `while (listening)` loop lets the server keep accepting client connections.
+- For each accepted client, `new Thread(new ClientHandler(...)).start()` launches a new thread with the `ClientHandler` runnable.
+
+***
+
+**ClientHandler class (outline from PDF):**
+```java
+class ClientHandler implements Runnable {
+    private Socket clientSocket;
+
+    public ClientHandler(Socket socket) {
+        this.clientSocket = socket;
+    }
+
+    public void run() {
+        // Handle communication with this client
+        // E.g., read/write data using clientSocket streams
+    }
+}
+```
+- Implement the logic for what the server does per client inside `run`.
+
+***
+
+### **Process Summary Table**
+
+| Step     | Description                        | Java Element                    |
+|----------|------------------------------------|---------------------------------|
+| Accept   | Wait for new client connections    | `ServerSocket.accept()`         |
+| Thread   | Start new thread for each client   | `new Thread(new ClientHandler())` |
+| Handle   | Do client-specific work            | `ClientHandler.run()`           |
+
+***
+
+### **Key Points from the PDF**
+
+- **Every connected client gets a thread;** issues in one don't affect others.
+- **Server and Client Programs:** Client file – single class; Server file – server class and `ClientHandler` for multithreading.
+- **Java supports concurrent execution (multithreading) for maximum CPU usage.**
+- **Debugging and maintenance are harder, but performance and responsiveness improve greatly.**
