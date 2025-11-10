@@ -1492,3 +1492,159 @@ Output will display every row present in the `book` table, formatted as above.
 | Close Conn       | `con.close()`                                                              | (No output)                          |
 
 ---
+
+# 8) Executing SQL Queries Using JDBC
+
+Java provides the JDBC API for executing SQL queries from Java applications on relational databases.
+
+### **Main Approaches to Execute SQL Queries Using JDBC:**
+
+1. **Using `Statement` (simple SQL, no parameters)**
+2. **Using `PreparedStatement` (with/without parameters, safer against SQL injection)**
+
+***
+
+### **1. Using `Statement` Interface**
+
+The `Statement` interface is used for executing simple SQL queries (without parameters).
+
+#### **How to Use:**
+
+- Create a `Statement` object from a `Connection` object:
+  ```java
+  Statement stmt = con.createStatement();
+  ```
+- **Execute SQL Query:**  
+  - `executeQuery(String sql)` for SELECT (returns a `ResultSet`)
+  - `executeUpdate(String sql)` for INSERT, UPDATE, DELETE (returns the number of affected rows)
+
+#### **Example: Retrieving All Rows from a Table**
+
+```java
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class RetrieveDataExample {
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/books", "root", "password"
+            );
+            if(con != null) {
+                String selectQuery = "SELECT * FROM book";
+                Statement statement = con.createStatement();
+                ResultSet resultSet = statement.executeQuery(selectQuery);
+                System.out.println("The Available Data\n");
+                while(resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String author_name = resultSet.getString("author");
+                    String book_name = resultSet.getString("name");
+                    String book_price = resultSet.getString("price");
+                    System.out.println(
+                        "ID: " + id +
+                        ", Author_Name: " + author_name +
+                        ", Book_Name: " + book_name +
+                        ", Book_Price " + book_price
+                    );
+                }
+            } else {
+                System.out.println("Not Connected...");
+            }
+        } catch(Exception e) {
+            System.out.println("Exception is " + e.getMessage());
+        }
+    }
+}
+```
+
+**Output Example (if data exists):**
+```
+The Available Data
+
+ID: 1, Author_Name: John Doe, Book_Name: Java Basics, Book_Price 400
+ID: 2, Author_Name: Mary Smith, Book_Name: NetworkX, Book_Price 350
+...
+```
+
+***
+
+### **JDBC Methods to Execute SQL**
+
+| Method                      | Use Case                                 | Returns           |
+|-----------------------------|------------------------------------------|-------------------|
+| `executeQuery(String sql)`  | Execute SELECT queries                   | ResultSet         |
+| `executeUpdate(String sql)` | Execute INSERT, UPDATE, DELETE queries   | int (rows count)  |
+| `execute(String sql)`       | Executes any SQL statement. If it returns a ResultSet, true; else false. | boolean           |
+
+***
+
+### **Processing the ResultSet**
+
+- The `ResultSet` object holds query results.
+- Use `next()` to move the ResultSet cursor forward.
+- Use getter methods (`getInt`, `getString`, etc.) to access columns.
+
+```java
+while(rs.next()) {
+    String name = rs.getString("name");
+    int price = rs.getInt("price");
+    // ...
+}
+```
+
+***
+
+### **2. Using `PreparedStatement` Interface (Bonus from PDF)**
+
+- Use when SQL statements have input parameters.
+- More secure and efficient for repeated execution.
+- Example:
+  ```java
+  String sql = "INSERT INTO book (id, name, author, price) VALUES (?, ?, ?, ?)";
+  PreparedStatement pstmt = con.prepareStatement(sql);
+  pstmt.setInt(1, 3);
+  pstmt.setString(2, "Data Science");
+  pstmt.setString(3, "Alice Carter");
+  pstmt.setInt(4, 450);
+  int rows = pstmt.executeUpdate();
+  ```
+
+**Output:**  
+Number of rows affected (`rows`) is printed or checked.
+
+***
+
+### **Executing Modifying Queries (Insert/Update/Delete)**
+
+```java
+// Insert Example
+int rowsInserted = stmt.executeUpdate("INSERT INTO book VALUES (3, 'Data Science', 'Alice Carter', 450)");
+System.out.println("Rows inserted: " + rowsInserted);
+
+// Output:
+Rows inserted: 1
+```
+
+***
+
+### **Best Practices**
+
+- ALWAYS close `ResultSet`, `Statement` and `Connection` (or use try-with-resources with Java 7+).
+- Handle SQLExceptions.
+
+***
+
+### **Summary Table**
+
+| Step        | Method/Statement                                             | Output/Result                       |
+|-------------|-------------------------------------------------------------|-------------------------------------|
+| Query       | `executeQuery("SELECT ...")`                                | ResultSet with query results        |
+| Insert      | `executeUpdate("INSERT ...")`                               | Number of rows inserted             |
+| Update      | `executeUpdate("UPDATE ...")`                               | Number of rows updated              |
+| Delete      | `executeUpdate("DELETE ...")`                               | Number of rows deleted              |
+| Any Query   | `execute(sql)`                                              | true/false (ResultSet or not)       |
+
+---
