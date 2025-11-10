@@ -1197,3 +1197,138 @@ _This output is from the statement: `System.out.println(stub.add(34, 4));` when 
 - Server and client complete code
 
 ---
+# 7) Java RMI and Object Serialization
+
+### **What is Serialization in Java?**
+
+- **Serialization:** The process of converting an object into a byte stream, so it can be transported over a network (to another JVM using RMI) or persisted to disk.
+- **Deserialization:** The process of reconstructing the object from its byte stream.
+
+**Serialization is key for RMI:**  
+- When you need to transfer objects between JVMs via remote method calls, those objects must be _serializable_.
+- Any object (including user-defined objects, lists, etc.) sent as a parameter or a return value in a remote method must implement the `Serializable` interface.
+
+***
+
+### **Serializable Interface and Example**
+
+- **Interface:** `java.io.Serializable` (marker interface, no methods)
+- **Fields marked `transient`:** Are _not_ serialized.
+
+```java
+// FSFile.java
+import java.io.*;
+public class FSFile implements Serializable {
+    public static final int READ = 0;
+    public static final int WRITE = 1;
+    private int flag;
+    private String filename;
+    private transient BufferedWriter writer;
+    private transient BufferedReader reader;
+
+    // Custom serialization methods
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        stream.writeObject(writer);
+        stream.writeObject(reader);
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        writer = (BufferedWriter) stream.readObject();
+        reader = (BufferedReader) stream.readObject();
+    }
+}
+```
+
+- **Key Points:**  
+  - You can control serialization of non-serializable fields (like streams) by providing custom `writeObject` and `readObject` methods.
+  - The `transient` keyword is used to prevent serialization of fields that cannot or should not be serialized.
+
+***
+
+### **Object Serialization in RMI**
+
+**How it works in RMI:**
+- All objects sent as arguments OR returned as results in remote methods MUST be serializable.
+- Example: Suppose you have a file service, and you want to transfer a file object (like `FSFile` above) between server and client via RMI.
+
+***
+
+### **Step-by-step Use Case of Serializable Object with RMI (based on PDF)**
+
+#### **1. Define a Serializable Class (see FSFile above)**
+
+#### **2. Use as Parameter or Return Type in Remote Interface**
+
+```java
+// FileService.java
+import java.rmi.*;
+public interface FileService extends Remote {
+    public FSFile getFile(String filename) throws RemoteException;
+}
+```
+
+#### **3. Server Implementation Sends Serializable Object**
+
+```java
+// FileServiceImpl.java
+import java.rmi.server.*;
+import java.rmi.*;
+public class FileServiceImpl extends UnicastRemoteObject implements FileService {
+    public FileServiceImpl() throws RemoteException { super(); }
+    public FSFile getFile(String filename) throws RemoteException {
+        // return a new FSFile object which is serializable
+        return new FSFile(filename, FSFile.READ);
+    }
+}
+```
+
+#### **4. Client Receives Serializable Object**
+
+```java
+// FileClient.java
+import java.rmi.*;
+public class FileClient {
+    public static void main(String[] args) {
+        try {
+            FileService service = (FileService)Naming.lookup("rmi://localhost:5000/fileservice");
+            FSFile file = service.getFile("example.txt");
+            System.out.println("Filename: " + file.getFilename());
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+
+***
+
+### **Expected Output**
+
+- **On the client terminal**, you see something like:
+```
+Filename: example.txt
+```
+(The actual output may include more details if you print other FSFile fields.)
+
+***
+
+### **Summary Table – Serialization in RMI**
+
+| Aspect                     | Implementation                      | Output                                       |
+|----------------------------|--------------------------------------|----------------------------------------------|
+| Serializable Interface     | `implements Serializable`            | (No output, marker interface)                |
+| Custom Serialization       | `writeObject` and `readObject`       | (No output, except possible exceptions)      |
+| RMI Transfer (Client Side) | Received object usable as normal     | `Filename: example.txt`                      |
+
+***
+
+### **Key PDF Points Covered**
+
+- **Definition and importance of serialization for RMI**
+- **How to make classes serializable, and control serialization with transient, writeObject/readObject**
+- **How RMI uses serialized objects for method parameters and return values across JVMs**
+- **Full code sample for a serializable class, and use in a real RMI scenario**
+- **Output expectation when client receives and uses the serializable object**
+---
