@@ -571,6 +571,4 @@ public class URLDemo {
 
 ***
 
-**Everything above summarizes all instructive content from the PDF about these classes, including their real use, differences between IP versions, constructor variations, caching, and typical usage with Java code and output examples.**
 
-[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/68867823/9a9975f6-a6f4-4ffa-a8cc-c422f541ca51/4.pdf)
