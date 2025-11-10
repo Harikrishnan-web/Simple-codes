@@ -418,7 +418,7 @@ Think of socket programming like a **phone call**:
 This detailed explanation covers the fundamentals of socket programming in Java. The key is understanding that sockets provide a communication channel between two programs, with one acting as server (listener) and the other as client (connector).
 
 ---
-# Java InetAddress Class
+# 2. Java InetAddress Class
 
 - **Purpose**: The `InetAddress` class represents an IP address, which helps identify resources on a network (like websites or devices).
 - **IP Address**: Every device on a network has a unique IP address (either IPv4 or IPv6) that looks like `192.168.0.1` or a longer hex value in the case of IPv6.
