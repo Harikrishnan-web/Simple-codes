@@ -1048,4 +1048,152 @@ Client prints:
 - **Six steps detailed: interface, implementation, stub, registry, server, client.**
 - **Complete Java code for each file.**
 - **All required commands for rmic, rmiregistry, compiling, and running given.**
+Here is a **full, stepwise guide to creating and running an RMI server and client in Java**, including all details and correct outputs from your PDF:
+
+***
+
+## **1. Create the Remote Interface**
+
+Extend `java.rmi.Remote` and declare methods that throw `RemoteException`.
+
+```java
+// Adder.java
+import java.rmi.*;
+public interface Adder extends Remote {
+    public int add(int x, int y) throws RemoteException;
+}
+```
+
+***
+
+## **2. Implement the Remote Interface**
+
+Extend `UnicastRemoteObject` or use exportObject; make a constructor throwing `RemoteException`.
+
+```java
+// AdderRemote.java
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class AdderRemote extends UnicastRemoteObject implements Adder {
+    AdderRemote() throws RemoteException {
+        super();
+    }
+    public int add(int x, int y) { return x + y; }
+}
+```
+
+***
+
+## **3. Compile Implementation and Create Stub**
+
+Use the `rmic` tool to generate stub (for older Java skeleton also).
+
+```bash
+javac Adder.java AdderRemote.java
+rmic AdderRemote
+```
+
+***
+
+## **4. Start the RMI Registry**
+
+Use the `rmiregistry` tool (use port 5000, as in the PDF).
+
+```bash
+rmiregistry 5000
+```
+
+***
+
+## **5. Create and Run the Server Application**
+
+The server binds the remote object to the registry.
+
+```java
+// MyServer.java
+import java.rmi.*;
+public class MyServer {
+    public static void main(String args[]) {
+        try {
+            Adder stub = new AdderRemote();
+            Naming.rebind("rmi://localhost:5000/sonoo", stub);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+**How to run:**  
+```bash
+javac MyServer.java
+java MyServer
+```
+
+***
+
+## **6. Create and Run the Client Application**
+
+The client looks up the remote object and invokes its methods.
+
+```java
+// MyClient.java
+import java.rmi.*;
+public class MyClient {
+    public static void main(String args[]) {
+        try {
+            Adder stub = (Adder)Naming.lookup("rmi://localhost:5000/sonoo");
+            System.out.println(stub.add(34, 4));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+**How to run:**  
+```bash
+javac MyClient.java
+java MyClient
+```
+
+***
+
+## **Expected Outputs for Each Program**
+
+### **When Running Server:**  
+- If the binding succeeds, it will be silent or may just show exceptions if any.  
+- For example, if successful:  
+  *(No output; ready to serve requests)*
+
+### **When Running Client:**  
+- The client will output the result of the remote method call.  
+- **Output:**  
+```
+38
+```
+_This output is from the statement: `System.out.println(stub.add(34, 4));` when `34 + 4` is computed on the server and returned._
+
+***
+
+## **Summary Table – RMI Application Lifecycle**
+
+| Step          | Command/File/Action                         | Output/Result          |
+|---------------|---------------------------------------------|------------------------|
+| 1. Interface  | Adder.java                                  | (No console output)    |
+| 2. Impl.      | AdderRemote.java                            | (No console output)    |
+| 3. Compile    | javac Adder.java AdderRemote.java           | (Generates .class)     |
+|               | rmic AdderRemote                            | (Generates stub)       |
+| 4. Registry   | rmiregistry 5000                            | (No output)            |
+| 5. Server     | MyServer.java / java MyServer               | (No output)            |
+| 6. Client     | MyClient.java / java MyClient               | **38**                 |
+
+***
+
+## **All PDF Details Included**
+- RMI intro, distributed computing, stub/skeleton concepts
+- Full stepwise setup and explanations
+- Remote interface and implementation code  
+- Stub generation and registry details
+- Server and client complete code
+
 ---
