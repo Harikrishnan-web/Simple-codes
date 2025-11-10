@@ -90,123 +90,158 @@ Identical to the first example: a frame of size 400x500 pixels with a "click" bu
 - GUI windows display as specified, with frame size and button placement matching code.
 
 ---
-# 2) Model-View-Controller (MVC)  
-The Model-View-Controller (MVC) is a well-known design pattern in the web development field. It is way to organize our code. It specifies that a program or application shall consist of data model, presentation information and control information. The MVC pattern needs all these components to be separated as different objects. In this section, we will discuss the MVC Architecture in Java, along with its advantages and disadvantages and examples to understand the implementation of MVC in Java.  
-What is MVC architecture in Java?  
-The model designs based on the MVC architecture follow MVC design pattern. The application logic is separated from the user interface while designing the software using model designs. The MVC pattern architecture consists of three layers  
-- Model  
-It represents the business layer of application. It is an object to carry the data that can also contain the logic to update controller if data is changed.  
-- View  
-It represents the presentation layer of application. It is used to visualize the data that the model contains.  
-- Controller  
-It works on both the model and view. It is used to manage the flow of application, i.e. data flow in the model object and to update the view whenever data is changed.  
-In Java Programming, the Model contains the simple Java classes, the View used to display the data and the Controller contains the servlets. Due to this separation the user requests are processed as follows  
-1. A client browser sends a request to the controller on the server side, for a page  
-2. The controller then calls the model. It gathers the requested data.  
-3. Then the controller transfers the data retrieved to the view layer.  
-4. Now the result is sent back to the browser client by the view.  
-Advantages of MVC Architecture  
-The advantages of MVC architecture are as follows,  
-- MVC has the feature of scalability that in turn helps the growth of application.  
-- The components are easy to maintain because there is less dependency.  
-- A model can be reused by multiple views that provides reusability of code.  
-- The developers can work with the three layers Model, View, and Controller simultaneously.  
-- Using MVC, the application becomes more understandable.  
-- Using MVC, each layer is maintained separately therefore we do not require to deal with massive code.  
-- The extending and testing of application is easier.  
 
-Implementation of MVC using Java  
-To implement MVC pattern in Java, we are required to create the following three classes.  
-- Employee Class, will act as model layer.  
-- EmployeeView Class, will act as a view layer.  
-- EmployeeController Class, will act a controller layer.  
+# 2) What is MVC Architecture in Java?
 
-MVC Architecture Layers  
+- **Model:** Represents the business layer or data layer. It manages the data, business logic, and state of the application. It can also notify the controller if any data changes.
+- **View:** Represents the presentation layer. It displays the data from the model to the user. The view is responsible for the user interface and visualization.
+- **Controller:** Acts as an intermediary between Model and View. It receives user inputs from the view, processes them (including validation), updates the model accordingly, and instructs the view to reflect any changes.
 
-Model Layer  
-The Model in the MVC design pattern acts as a data layer for the application. It represents the business logic for application and also the state of application. The model object fetches and store the model state in the database. Using the model layer, rules are applied to the data that represents the concepts of application. Lets consider the following code snippet that creates a class that represents model  
+### How MVC Works in Java:
+
+1. The client (user) interacts with the **View** (e.g., enters data or clicks a button).
+2. The **View** sends this input to the **Controller**.
+3. The **Controller** processes the input, updates the **Model** as needed, and instructs the **View** to update.
+4. The **Model** holds the data and notifies the **View** of any changes.
+5. The **View** renders the updated data.
+
+***
+
+## Advantages of MVC Architecture
+
+- **Scalability:** Enables applications to grow more easily with less interdependency.
+- **Maintainability:** Each component is separate, making code easier to maintain and update.
+- **Reusability:** Models can be reused by multiple views.
+- **Parallel Development:** Different developers can work simultaneously on Model, View, and Controller.
+- **Better Testing:** Layers can be tested independently.
+- **Code Organization:** Clear separation improves understandability and debugging.
+
+### Disadvantages
+
+- Adds complexity, especially for small applications.
+- Increased number of files and components to manage.
+- Learning curve for beginners.
+- Possible performance overhead from extra communications between layers.
+
+***
+
+## Java MVC Implementation Example
+
+### Model Layer: Employee.java
+
 ```java
 public class Employee {
-    private String EmployeeName;
-    private String EmployeeId;
-    private String EmployeeDepartment;
-    public String getId() { return EmployeeId; }
-    public void setId(String id) { this.EmployeeId=id; }
-    public String getName() { return EmployeeName; }
-    public void setName(String name) { this.EmployeeName = name; }
-    public String getDepartment() { return EmployeeDepartment; }
-    public void setDepartment(String Department) { this.EmployeeDepartment = Department; }
+    private String employeeName;
+    private String employeeId;
+    private String employeeDepartment;
+
+    public String getEmployeeName() { return employeeName; }
+    public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
+
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+
+    public String getEmployeeDepartment() { return employeeDepartment; }
+    public void setEmployeeDepartment(String employeeDepartment) { this.employeeDepartment = employeeDepartment; }
 }
 ```
 
-View Layer  
-As the name depicts, view represents the visualization of data received from the model. The view layer consists of output of application or user interface. It sends the requested data to the client, that is fetched from model layer by controller. Lets take an example where we create a view using the EmployeeView class.  
+### View Layer: EmployeeView.java
+
 ```java
 public class EmployeeView {
-    public void printEmployeeDetails(String EmployeeName, String EmployeeId, String EmployeeDepartment){
+    public void printEmployeeDetails(String employeeName, String employeeId, String employeeDepartment) {
         System.out.println("Employee Details");
-        System.out.println("Name: " + EmployeeName);
-        System.out.println("Employee ID: " + EmployeeId);
-        System.out.println("Employee Department: " + EmployeeDepartment);
+        System.out.println("Name: " + employeeName);
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Employee Department: " + employeeDepartment);
     }
 }
 ```
 
-Controller Layer  
-The controller layer gets the user requests from the view layer and processes them, with the necessary validations. It acts as an interface between Model and View. The requests are then sent to model for data processing. Once they are processed, the data is sent back to the controller and then displayed on the view. Lets consider the following code snippet that creates the controller using the EmployeeController class.  
+### Controller Layer: EmployeeController.java
+
 ```java
 public class EmployeeController {
     private Employee model;
     private EmployeeView view;
+
     public EmployeeController(Employee model, EmployeeView view) {
         this.model = model;
         this.view = view;
     }
-    public void setEmployeeName(String name) { model.setName(name); }
-    public String getEmployeeName() { return model.getName(); }
-    public void setEmployeeId(String id) { model.setId(id); }
-    public String getEmployeeId() { return model.getId(); }
-    public void setEmployeeDepartment(String Department) { model.setDepartment(Department); }
-    public String getEmployeeDepartment() { return model.getDepartment(); }
+
+    public void setEmployeeName(String name) { model.setEmployeeName(name); }
+    public String getEmployeeName() { return model.getEmployeeName(); }
+
+    public void setEmployeeId(String id) { model.setEmployeeId(id); }
+    public String getEmployeeId() { return model.getEmployeeId(); }
+
+    public void setEmployeeDepartment(String department) { model.setEmployeeDepartment(department); }
+    public String getEmployeeDepartment() { return model.getEmployeeDepartment(); }
+
     public void updateView() {
-        view.printEmployeeDetails(model.getName(), model.getId(), model.getDepartment());
+        view.printEmployeeDetails(model.getEmployeeName(), model.getEmployeeId(), model.getEmployeeDepartment());
     }
 }
 ```
 
-Main Class Java file  
-The following example displays the main file to implement the MVC architecture. Here, we are using the MVC Main class.  
+### Main Application: MVCMain.java
+
 ```java
 public class MVCMain {
-    public static void main(String args[]) {
-        Employee model = retriveEmployeeFromDatabase();
+    public static void main(String[] args) {
+        Employee model = retrieveEmployeeFromDatabase();
         EmployeeView view = new EmployeeView();
         EmployeeController controller = new EmployeeController(model, view);
+
+        // Display initial employee details
         controller.updateView();
+
+        // Update employee details via controller
         controller.setEmployeeName("Nirnay");
-        System.out.println("Employee Details after updating");
+        System.out.println("Employee Details after updating:");
         controller.updateView();
     }
-    private static Employee retriveEmployeeFromDatabase() {
-        Employee Employee = new Employee();
-        Employee.setName("Anu");
-        Employee.setId("11");
-        Employee.setDepartment("Salesforce");
-        return Employee;
+
+    private static Employee retrieveEmployeeFromDatabase() {
+        Employee employee = new Employee();
+        employee.setEmployeeName("Anu");
+        employee.setEmployeeId("11");
+        employee.setEmployeeDepartment("Salesforce");
+        return employee;
     }
 }
 ```
 
-Output  
-Employee Details  
-Name: Anu  
-Employee ID: 11  
-Employee Department: Salesforce  
+***
 
-Employee Details after updating  
-Name: Nirnay  
-Employee ID: 11  
+## How It Works
+
+- The `Employee` class holds the data.
+- The `EmployeeView` class defines how data is presented to the user.
+- The `EmployeeController` manages data updates and view refresh.
+- The `MVCMain` demonstrates creating objects, showing data, and updating the model via the controller.
+
+### Sample Output
+
+```
+Employee Details
+Name: Anu
+Employee ID: 11
 Employee Department: Salesforce
+Employee Details after updating:
+Name: Nirnay
+Employee ID: 11
+Employee Department: Salesforce
+```
+
+***
+
+This implementation cleanly separates concerns, making it straightforward to maintain and extend each part individually. You can adapt or expand this example to build larger Java applications following MVC principles.
+
+
+
 ---
 # 3) Java Layout Management  
 The Layout Managers are used to arrange components in a particular manner. The Java Layout Managers facilitates us to control the positioning and size of the components in GUI forms. Layout Manager is an interface that is implemented by all the classes of layout managers.  
