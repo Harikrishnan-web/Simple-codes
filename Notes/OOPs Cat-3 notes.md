@@ -570,5 +570,178 @@ public class URLDemo {
 - File: /search?q=javatpoint&oq=javatpoint&sourceid=chrome&ie=UTF-8
 
 ***
+---
 
+# 3) TCP and UDP Protocols in Java
 
+### **Overview**
+
+- **TCP (Transmission Control Protocol)** is **connection-oriented**, reliable, and ensures ordered, complete data transfer. Used for things like web pages, file downloads.
+- **UDP (User Datagram Protocol)** is **connectionless**, does NOT guarantee delivery, or data order, but is faster. Used for streaming, gaming, VoIP, etc.
+
+***
+
+### **TCP Example: Client-Server Communication (Socket & ServerSocket)**
+
+#### **Server Side (MyServer.java)**
+```java
+import java.io.*;
+import java.net.*;
+
+public class MyServer {
+    public static void main(String args[]) {
+        try {
+            ServerSocket ss = new ServerSocket(6666);
+            Socket s = ss.accept(); // establishes connection
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            String str = (String)dis.readUTF();
+            System.out.println("message = " + str);
+            ss.close();
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+
+#### **Client Side (MyClient.java)**
+```java
+import java.io.*;
+import java.net.*;
+
+public class MyClient {
+    public static void main(String args[]) {
+        try {
+            Socket s = new Socket("localhost", 6666);
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            dout.writeUTF("Hello Server");
+            dout.flush();
+            dout.close();
+            s.close();
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+```
+**How to run:**
+- Compile: `javac MyServer.java MyClient.java`
+- Run server in one terminal: `java MyServer`
+- Run client in another: `java MyClient`
+
+***
+
+#### **TCP Protocol Features (from PDF)**
+- **Ensures data delivery:** Order, completeness.
+- **Connection-oriented:** 3-way handshake (SYN → SYN-ACK → ACK)
+- **Will resend missing data**
+
+***
+
+### **Another TCP Example: Complete Steps and Code**
+
+**Client Side (Client.java):**
+```java
+import java.io.*;
+import java.net.*;
+public class Client {
+    public static void main(String args[]) {
+        try {
+            System.out.println("Client program started");
+            int PORT = 9000;
+            String IP = "127.0.0.1";
+            Socket conn = new Socket(IP, PORT);
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            String mssge = "Hello Ninja";
+            dos.writeUTF(mssge);
+            System.out.println("Client sent the message " + mssge);
+            dos.flush();
+            dos.close();
+            conn.close();
+            System.out.println("Client program closed");
+        } catch (Exception exp) {
+            System.out.println(exp);
+        }
+    }
+}
+```
+
+**Server Side (Server.java):**
+```java
+import java.io.*;
+import java.net.*;
+public class Server {
+    public static void main(String args[]) {
+        try {
+            System.out.println("Starting the server");
+            int PORT = 9000;
+            ServerSocket sock = new ServerSocket(PORT);
+            Socket conn = sock.accept();
+            System.out.println("Client Server Connection established");
+            DataInputStream dis = new DataInputStream(conn.getInputStream());
+            System.out.println("Waiting for the client's message");
+            String msg = (String)dis.readUTF();
+            System.out.println("Message from client: " + msg);
+            conn.close();
+            sock.close();
+            System.out.println("Closing the server");
+        } catch (Exception exp) {
+            System.out.println(exp);
+        }
+    }
+}
+```
+
+***
+
+### **UDP Programming (DatagramSocket & DatagramPacket)**
+
+#### **Notes**
+- **Classes:** `DatagramSocket`, `DatagramPacket`
+- **No connection setup.**
+- **No delivery/order guarantee.**
+
+#### **Code Structure (not explicitly included in the PDF, but outlined):**
+```java
+// Server Side (receiving)
+DatagramSocket ds = new DatagramSocket(3000);
+byte[] receive = new byte[65535];
+DatagramPacket DpReceive = new DatagramPacket(receive, receive.length);
+ds.receive(DpReceive);
+System.out.println("Received: " + new String(DpReceive.getData(), 0, DpReceive.getLength()));
+ds.close();
+```
+```java
+// Client Side (sending)
+DatagramSocket ds = new DatagramSocket();
+InetAddress ip = InetAddress.getLocalHost();
+byte[] buf = "Hello".getBytes();
+DatagramPacket DpSend = new DatagramPacket(buf, buf.length, ip, 3000);
+ds.send(DpSend);
+ds.close();
+```
+**(The PDF emphasizes these classes and their use for UDP, but does not give full code for UDP as it does for TCP.)**
+
+***
+
+### **Comparison Table (TCP vs UDP)**
+
+| Aspect            | TCP                        | UDP                                  |
+|-------------------|----------------------------|--------------------------------------|
+| Connection        | Connection-oriented        | Connectionless                       |
+| Reliability       | Reliable (guaranteed)      | Unreliable (no guarantee)            |
+| Speed             | Slower                     | Faster                               |
+| Java Classes      | Socket, ServerSocket       | DatagramSocket, DatagramPacket       |
+| Use Cases         | Web, file transfer         | Streaming, gaming, VoIP              |
+| Order of packets  | Maintained                 | Not maintained                       |
+
+***
+
+### **All Important Topics Included**
+- Concepts, definitions, and comparisons of TCP and UDP
+- How to use Java's main TCP and UDP classes
+- Detailed code for TCP client-server, partial outline for UDP (as shown in the PDF)
+- Real-world, step-by-step instructions and output expectations
+- Features, advantages, and reasons for protocol choice
+
+***
