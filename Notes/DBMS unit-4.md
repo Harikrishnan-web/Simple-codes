@@ -704,3 +704,353 @@ Fixed number of buckets; hash function always yields the same address.
 Hashing enables efficient, direct record access using a key, but requires careful collision/overflow management and is not efficient for range queries. Dynamic hashing methods overcome limitations of static structures by growing/shrinking with data size.
 ---
 # 12) Static Hashing
+Static Hashing – All Details
+
+**Definition:**
+Static hashing is a technique where the number of buckets is fixed, and the hash function always generates the same bucket address for a given search key. The bucket count is constant and the hash function maps each record directly to one bucket.
+
+**How Static Hashing Works:**
+- **Hash Function:** Generates bucket address (e.g., `key mod 10` for 10 buckets).
+- **Bucket:** A unit of storage (disk block) for records.
+- **Insertion:** Record placed in the computed bucket.
+
+**Example:**  
+For 10 buckets numbered 0-9, if you want to add a record with StudRollNo 34789 using `mod 10` hash function, it goes to bucket 9.
+
+**Collision Resolution:**
+- **Overflow Page:** If bucket is full, allocate a new page and link it to the bucket’s overflow chain.
+- **Open Hashing (Linear Probing):** If the target bucket is occupied, records are placed in the next available bucket slot.
+
+**Clustering Problem:**  
+When linear probing is used, multiple fills in adjacent buckets create clusters, causing slower access.
+
+**Advantages:**
+- Simple to implement.
+- Fast, direct access for search key/equality queries.
+
+**Disadvantages:**
+- Not scalable – fixed bucket count does not accommodate database size growth/shrinking.
+- Difficult for ordered/range queries – records with consecutive keys likely placed in different buckets.
+- Overflow chains increase data access time and complexity.
+
+**Typical Static Hashing Operations (Conceptual Code):**
+```python
+def static_hash(key, bucket_count):
+    return key % bucket_count
+
+def insert(hash_table, key, value, bucket_count):
+    index = static_hash(key, bucket_count)
+    # If bucket is full, chain overflow...
+```
+*Organizations must manage the overflow chain during insertion and searching.*
+
+**Comparison with Dynamic Hashing:**  
+- **Static hashing:** Fixed bucket count, fast but not adaptive.
+- **Dynamic hashing:** Buckets count can grow/shrink dynamically (see Extendible Hashing).
+
+**Static Hashing Example:**  
+Hash table with ten buckets, Insert StudRollNo 35111 (hashes to bucket 1 using `mod 10`). If bucket 1 is full → overflow page created and linked to bucket 1’s chain.
+
+**Range Queries:**  
+Not efficient, as consecutive keys are likely spread across buckets. Every bucket would need to be checked for range queries.
+
+**Review Answers:**
+- Static hashing is not suitable for variable-size databases or range queries.
+- Overflow often happens if buckets are insufficient for record volume or bucket skew occurs (some buckets get more records).
+- To reduce overflow, hash function should distribute keys uniformly; keep table 70-80% full only.
+
+**Summary:**  
+Static hashing provides fast, direct key lookup but struggles with changing database size and sequential access. Collision resolution is managed with overflows or linear probing; clustering and overflow chains must be managed carefully. Suitable for databases with stable record numbers and equality searches, but not for large, dynamic, or range query-heavy applications.
+---
+# 13) Dynamic Hashing
+Dynamic Hashing – All Details
+
+**Definition:**  
+Dynamic hashing is a hashing technique where the number of buckets changes dynamically with the growth or shrinkage of the database. This overcomes the limitations of static hashing, which has a fixed number of buckets.
+
+**Extendible Hashing (Most Common Dynamic Method):**
+- Uses a *directory* of pointers to buckets, with directory size doubling as needed.
+- *Global depth*: number of bits used in directory addressing.
+- *Local depth*: number of bits each bucket uses for stored entries.
+
+**Working Steps:**
+1. **Insertion:**  
+   - Hash function produces a value from key (use last d bits for lookup in directory).
+   - If bucket is full:
+     - Split the bucket: create a new one; redistribute records based on next bit in hash value.
+     - Update local depth of split buckets.
+     - If required, double directory size and increment global depth.
+     - Update pointers so directory points to new buckets.
+     - Repeat if necessary for further splits.
+
+2. **Deletion:**  
+   - Remove key from bucket.
+   - If two buckets with same local depth become empty, they can be merged and the directory shrunk.
+
+**Example:**
+- Directory uses last two bits of key's binary hash; `00`, `01`, `10`, `11` point to four buckets.
+- On insert if bucket `00` is full, split using last three bits, expanding directory to eight entries.
+- Redistribution places keys accurately in newly created buckets.
+
+**Bucket Redistribution:**
+- Keys are moved among buckets per expanded bit length.
+- Local depth increases only for affected buckets, global depth increases if directory doubles.
+
+**Advantages:**
+- Efficient handling of growing/shrinking datasets, as buckets are created or merged as needed.
+- Avoids overflow chains and clustering.
+- Uniform data distribution, minimizing collision.
+- No fixed capacity: structure scales with data size.
+
+**Disadvantages:**
+- Slightly more complex management (directory resizing, local/global bit tracking).
+- Data redistribution incurs some overhead on splits.
+
+**Comparison—Static vs Dynamic Hashing:**
+| Aspect              | Static Hashing               | Dynamic Hashing (Extendible)      |
+|---------------------|------------------------------|-----------------------------------|
+| Bucket Size         | Fixed                        | Dynamically grows/shrinks         |
+| Overflow Handling   | Overflow pages/chains        | Bucket split, directory resize    |
+| Scalability         | Poor                         | Excellent                         |
+| Collision Control   | Simple, can cluster          | Lower collisions, uniform spread  |
+| Range Queries       | Inefficient                  | Still not efficient               |
+
+**Code Example (High Level):**
+```python
+# Directory: pointers to buckets, addressing uses global bit depth
+global_depth = d
+directory = [pointer_to_bucket for i in range(2**d)]
+
+def insert_dynamic_hashing(key, value):
+    hash_val = hash(key)
+    index = get_last_d_bits(hash_val, global_depth)
+    bucket = directory[index]
+    if bucket.is_full():
+        # Split bucket, redistribute, maybe expand directory
+```
+*Real-world implementations track directory, buckets, split/merge logic and bit depths.*
+
+**Applications:**
+- Database and file system indexes, scalable storage systems.
+- Used where key equality search and database size variation are common.
+
+**Key Points:**
+- Dynamic hashing eliminates the major scaling problem of static hashing by allowing the storage to adapt actively.
+- Has better collision resolution and overflow management than static hashing.
+- Ideal for applications with unpredictable data volume growth.
+
+**Summary:**
+Dynamic hashing (particularly extendible hashing) allows efficient, automatic bucket resizing and data redistribution, enabling consistent performance as database size changes. Global and local depth management keeps the structure flexible and collision-free, with operations covering insertion, splitting, directory expansion, deletion, and merging—all aiming to maintain efficiency and balance.
+---
+# 14) Query Processing Overview
+Query Processing Overview
+
+**Definition:**  
+Query processing consists of all activities involved in extracting data from a database. It is concerned with transforming high-level queries (such as SQL) into efficient low-level instructions for the database storage engine.
+
+**Main Steps in Query Processing:**
+
+1. **Parsing and Translation:**  
+   - The query is first checked for correct syntax using a parser.
+   - The parsed query is translated into an internal representation, often a tree structure using relational algebra.
+   - Example:  
+     - SQL Query: `SELECT RollNo, name FROM Student WHERE RollNo=10`
+     - Parsed into relational algebra tree; checks for errors and verifies referenced relations.
+
+2. **Optimization:**  
+   - Multiple query evaluation plans are created from relational algebra expressions.
+   - Each plan is assigned a cost based on factors such as disk access, CPU time, and communication overhead (if distributed).
+   - The optimizer chooses the plan with the lowest estimated cost.
+   - Cost estimation uses database catalog statistics—number and size of tuples, selectivity of attributes, etc.
+
+3. **Evaluation:**  
+   - The chosen query execution plan is executed by the query engine.
+   - The engine retrieves results by performing operations (selection, join, sorting) as planned.
+
+**Query Cost:**
+- Query cost is often dominated by disk access time (number of seeks, block reads/writes).
+- Formula for query cost:
+  $$
+  \text{Total Query Cost} = (b \times t_r) + (S \times t_s)
+  $$
+  Where $$ b $$: blocks transferred, $$ S $$: seeks, $$ t_r $$: time per block transfer, $$ t_s $$: time per seek.
+
+**Query Execution Plan:**  
+- An annotated relational algebra tree specifying the exact order and methods for evaluating the query.
+
+**Example:**
+- SQL: `SELECT balance FROM account WHERE balance>1000`
+- Translated algebra:  
+  1. `σ_{balance > 1000}(account)`
+  2. `π_{balance}(σ_{balance > 1000}(account))`
+- Possible evaluation plans, optimizer selects lowest-cost plan.
+
+**Key Steps and Operations:**
+- Selections, projections, joins, sorting
+- Query trees and relational algebra transformations
+- Cost-based and heuristic-based optimization
+
+**Summary:**
+Query processing transforms user queries into efficient low-level operations using parsing, translation, optimization, and execution steps, selecting plans based on cost and returning the query result.
+---
+# 15) Measure of Query Cost – All Details
+Measure of Query Cost – All Details
+
+**Definition:**  
+The cost of a query is estimated to select the best among multiple possible evaluation plans. Query cost helps database systems choose efficient execution strategies based on resource usage.
+
+**Factors Contributing to Query Cost:**
+- **Disk Access:** Most influential factor due to slower speed compared to CPU and memory.
+- **CPU Time:** Computation time to execute queries.
+- **Communication Cost:** Cost of data transfer in distributed/parallel systems.
+- **Memory Usage:** Cost to store and process data in RAM.
+
+**Disk Access Dominates Query Cost:**
+- Disk access is slowest and is easily measurable.
+- Disk cost estimation considers:
+  - **Number of disk seeks**
+  - **Number of blocks read**
+  - **Number of blocks written**
+
+**Typical Query Cost Formula:**  
+Let:
+- $$ b $$: number of blocks transferred
+- $$ S $$: number of seeks
+- $$ t_r $$: time to transfer one block
+- $$ t_s $$: time to perform one seek
+
+Total query cost:
+$$
+\text{Query Cost} = (b \times t_r) + (S \times t_s)
+$$
+- **Block write cost** is generally higher than read because verification occurs after writing.
+
+**Further Cost Components (in advanced query optimizers):**
+- **Access cost to secondary storage**
+- **Computation cost** (CPU)
+- **Communication cost** (if in a distributed DBMS)
+- **Memory usage cost**
+
+**Database Catalog Information Used:**
+- File size, organization type
+- Multilevel index details
+- Distinct value counts for attributes
+- Attribute selectivity statistics
+- Histograms for key attributes
+
+**Estimation in Real Systems:**
+- Disk accesses, rather than CPU time, tend to dominate overall query cost.
+- Communication overhead is ignored for local databases.
+
+**Summary:**  
+The measure of query cost helps pick the least expensive query execution plan. In most centralized database applications, query cost is estimated using disk access parameters: seeks, block transfers, time to access, and write, as described in the formula above. Advanced systems may include computation, memory, and communication cost as well.
+---
+# 16) Algorithms for Selection, Sorting and Join Operations
+Algorithms for Selection, Sorting and Join Operations – All Details
+
+**Selection Operations**
+- The file scan is the main activity, which locates and retrieves records satisfying the selection condition.
+- **Algorithms for Selection:**
+  - **Linear Search (A1):**
+    - Scan each block and test every record to see if it satisfies the selection condition.
+    - Cost: $$ br $$ block transfers, 1 seek ($$ br $$ = number of blocks).
+    - Works without indices, works even if data not ordered.
+  - **Binary Search (A2):**
+    - For equality selection on ordered attribute.
+    - Blocks are stored contiguously.
+    - Cost: $$ \log_2 br $$ block scans to find first tuple, then more for records satisfying selection.
+    - Fast access if data is sorted.
+
+**Sorting Operations**
+- Sorting on disk usually uses **external sorting** methods for large datasets.
+- **External Merge Sort:**
+  - Data is loaded into main memory block by block, sorted in chunks, and stored in intermediate files.
+  - Then, chunks are repeatedly merged to form the final sorted file.
+  - **Multiway Merge Sort:** Merges m sorted lists into one sorted list.
+    - Two-way merge is a specific case (using two input and two output tapes).
+    - Process involves dividing N records into runs of size M (memory block size), sorting each run, then merging runs.
+
+**Steps:**
+  1. Divide input into blocks of size M; sort, store intermediate runs.
+  2. Merge runs repeatedly until a single sorted output remains.
+- **Complexity:** $$ O(N \log_{M} N) $$ where N = total records, M = block size.
+
+**Join Operations**
+- Join is the most time-consuming operation in query processing.
+- **Algorithms for Join:**
+  1. **Nested-Loop Join:**
+     - For each tuple in outer relation, test with every tuple in inner relation.
+     - Cost (worst-case): $$ n_r \times b_s + b_r $$ block transfers (r = outer, s = inner; $$ n_r $$, $$ b_r $$, $$ b_s $$ = tuples/blocks).
+     - Simple, but high cost with large relations.
+  2. **Block Nested-Loop Join:**
+     - Each block of outer relation is paired with every block of inner relation.
+     - Cost: $$ b_r \times b_s $$ block transfers, 2 seeks per block.
+     - More efficient than basic nested loop.
+  3. **Indexed Nested-Loop Join:**
+     - If inner relation has index, search can be faster.
+  4. **Merge Join:**
+     - Both relations sorted on join attribute.
+     - Merge matching records—equijoin/natural joins only.
+     - Cost: $$ b_r + b_s $$ block transfers, sorting cost if unsorted.
+  5. **Hash Join:**
+     - Hash function used to partition tuples of both relations.
+     - Cost: $$ 3b_r + b_s $$ block transfers (if partitioning is required).
+     - Efficient if entire build input fits in memory; reduces block access to minimum.
+
+**Optimization:**
+- The choice of algorithm depends on estimated query cost (disk accesses, seeks, memory).
+- Join performance boosted by selecting restrictive operations first (early selection, early projection).
+
+**Summary:**
+Selection algorithms include linear and binary search depending on file structure. Sorting operations use external merge sort for large data. Joins can be implemented as nested-loop, block nested-loop, indexed loop, merge join, or hash join, each having different cost and efficiency characteristics depending on data and indices. Efficient query execution depends on choosing the least costly combination of these algorithms for given database and query parameters.
+---
+# 17) Query Optimization using Heuristics – Cost Estimation
+
+**Heuristic Query Optimization:**
+- Heuristic optimization uses a set of rules (heuristics) to produce an efficient query execution plan quickly, reducing the need to evaluate all possible plans using cost-based analysis.
+- The rules are designed so that applying them typically leads to a lower-cost execution in most cases.
+
+**Main Heuristic Rules:**
+1. **Perform Selection Early:**  
+   - Apply selection operations as early as possible to reduce the number of tuples at each subsequent operation.
+2. **Perform Projection Early:**  
+   - Project only necessary attributes early to minimize memory and CPU usage.
+3. **Combine Restrictive Operations First:**  
+   - Execute operations like joins, selections, and projections in a way that reduces intermediate result size.
+4. **Avoid Cartesian Products:**  
+   - Substitute with joins whenever possible to reduce tuple explosion.
+5. **Choose Join Orders that Minimize Result Size Early:**  
+   - When joining multiple relations, join those with restrictive selection conditions first.
+
+**Steps in Heuristic Query Optimization:**
+- **Step 1:** Scanner and parser generate the initial query representation.
+- **Step 2:** Query-tree is optimized using heuristic rules.
+- **Step 3:** The query execution plan is developed, specifying operation order and method.
+
+**Example:**
+- Given two possible query tree structures for a join:
+  - a. Join all relations before restricting with selection.
+  - b. Select tuples that satisfy selection condition before join.
+  - The output of selection before join is smaller, leading to lower cost.
+
+**Cost-Based Estimation:**
+- A cost-based optimizer looks at all possible execution scenarios for a query.
+- Each scenario is assigned a cost (resource usage).
+- The plan with the lowest cost is chosen and executed.
+
+**Common Cost Components:**
+- Access cost to secondary storage (disk reads/writes)
+- CPU computation cost
+- Memory usage cost
+- Communication cost (in distributed systems)
+
+**Catalog Information for Cost Estimation:**
+- File and index sizes
+- Number of levels in multilevel indices
+- Number of distinct values of attributes
+- Attribute selectivity statistics
+- Histograms for key attributes
+
+**Summary:**
+Heuristics quickly prune many inefficient query plans and generate a near-optimal execution plan. A cost-based optimizer further refines choices, balancing disk, CPU, and memory access to select the cheapest path. Estimates come from catalog data and disk access metrics, ensuring fast, resource-efficient query execution.
+---
